@@ -1,4 +1,36 @@
-baseURL = "http://example.org/"
+baseURL = "/"
 languageCode = "en-us"
-title = "My New Hugo Site"
+title = "Erick Navarro"
 theme = "beautifulhugo"
+markup = "org"
+pygmentsCodeFences = true
+pygmentsUseClasses = true
+
+[Params]
+  rss = true
+  comments = true
+  readingTime = true
+
+[Author]
+  name = "Erick Navarro"
+  email = "erick@navarro.io"
+  twitter = "erickgnavar"
+  github = "erickgnavar"
+  gitlab = "erickgnavar"
+  instagram = "erickgnavar"
+  spotify = "erickgnavar"
+  linkedin = "erickgnavar"
+  telegram = "erickgnavar"
+  paypal = "erickgnavar"
+  website = "https://erick.navarro.io"
+
+[[menu.main]]
+  name = "Blog"
+  url = "blog"
+  title = "Blog"
+  weight = 1
+
+[[menu.main]]
+  name = "About me"
+  url = "about"
+  weight = 2
