@@ -1,6 +1,6 @@
 baseURL = "/"
 languageCode = "en-us"
-title = "Erick Navarro"
+title = "Some code and thoughts"
 theme = "beautifulhugo"
 markup = "org"
 pygmentsCodeFences = true
