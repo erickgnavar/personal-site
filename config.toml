@@ -36,3 +36,7 @@ pygmentsUseClasses = true
 [[menu.main]]
   name = "My dotfiles"
   url = "https://github.com/erickgnavar/dotfiles"
+
+[[menu.main]]
+  name = "Projects"
+  url = "projects"
