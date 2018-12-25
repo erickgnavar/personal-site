@@ -3,6 +3,7 @@ title: "Setting Up Hugo on Netlify"
 date: 2018-09-24T10:45:05-05:00
 summary: "Hugo is a static site generator that just like another alternatives(Nicola, Jekyll, etc) allows to write in plain text and generate html, js, css files. Hugo is so much simpler to use because it's a simple binary file that allows to develop and prepare the site to be published."
 tags: [ "org-mode", "hugo" ]
+type: posts
 ---
 
 [[http://gohugo.io][Hugo]] is a static site generator that just like another alternatives(Nicola, Jekyll, etc) allows to write in plain text and generate html, js, css files.
@@ -144,7 +145,7 @@ draft: true
 
 These lines are used by Hugo to show details about the content in the result file.
 
-Let's add the lines below to =hello-world.md=:
+Let's add the lines below to =hello-world.md=
 
 #+BEGIN_SRC markdown
 # This is a heading with level 1
