@@ -3,6 +3,10 @@ title: "About me"
 date: 2018-09-22T00:34:18-05:00
 ---
 
-My name is Erick Navarro, I'm a software developer.
+Hi there 😃
 
-I live in Lima, Perú.
+My name is Erick Navarro and I'm a software developer.
+
+I've worked mostly doing web development using Python and Javascript but now I work using Elixir also doing web. I'm very interesting in functional programming and that's why I spend time learning cool tech like Haskell and Clojure.
+
+I'm a emacs lover and that made me spend many hours tuning my emacs conf (I regret nothing).
