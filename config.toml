@@ -50,15 +50,19 @@ pygmentsCodeFences = true
   name = "Blog"
   url = "blog"
   title = "Blog"
+  weight = 1
 
 [[menu.main]]
   name = "About me"
+  weight = 2
   url = "about"
 
 [[menu.main]]
   name = "My dotfiles"
   url = "https://github.com/erickgnavar/dotfiles"
+  weight = 3
 
 [[menu.main]]
   name = "Projects"
   url = "projects"
+  weight = 4
