@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://erick.navarro.io"
 languageCode = "en-us"
 title = "Some code and thoughts"
 theme = "hugo-coder"
