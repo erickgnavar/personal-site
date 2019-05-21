@@ -1,0 +1,64 @@
+---
+title: "Creating an emacs formatter the easy way"
+date: 2019-05-20T19:44:35-07:00
+tags: [ emacs, elisp ]
+type: posts
+---
+
+Some weeks ago I discover a really nice package for emacs called [[https://github.com/purcell/reformatter.el][reformatter.el]]. This package allows to define reformat functions in a easy way.
+
+Most languages have a reformat tool. Elixir has =mix format=, Elm has =elm format=, python has =black= and so on. These formatters are convenient because they give uniformity to the code, but this is a topic for another post.
+
+Having these formatters integrated within our favorite editor is great. These are enough(at least for me) reasons to use =reformatter.el= so let's get into the code:
+
+=reformatter.el= has a simple macro that allows us to define a formatter with just a few lines.
+
+For this example we'll create a formatter for haskell using =hindent= [fn:hindent].
+
+#+BEGIN_SRC emacs-lisp
+
+  (reformatter-define haskell-format
+    :program "hindent")
+
+#+END_SRC
+
+We just need to define the command that will be used to format the code. In this case =hindent=. This will create some useful functions:
+
+- haskell-format
+- haskell-format-buffer
+- haskell-format-region
+- haskell-format-on-save-mode
+
+These functions can be used with a key-binding:
+
+#+BEGIN_SRC emacs-lisp
+
+  (define-key haskell-mode-map (kbd "C-c C-f") 'haskell-format-buffer)
+
+#+END_SRC
+
+Also we can setup emacs to run the formatter when the file is saved, for example put this code in your =.dir-locals.el= and it will do the work.
+
+#+BEGIN_SRC emacs-lisp
+
+  (haskell-mode (mode . haskell-format-on-save))
+
+#+END_SRC
+
+The program used to format our code needs to be able to read from =stdin= and return the formatted code to =stdout=. In this case =hindent= does it by default.
+
+In some cases the formatter doesn't do this by default. For those cases we can pass extra arguments to the command using =:args= key in the formatter macro. For example =elixir format= receive a file or a pattern by default but we can change that using =mix format -=, now it will read from =stdin=, so we need to pass these parameters to our formatter. The code should be:
+
+#+BEGIN_SRC emacs-lisp
+
+  (reformatter-define elixir-format
+    :program "mix"
+    :args '("format" "-"))
+
+#+END_SRC
+
+Now it will work properly.
+
+This package is very useful if you don't want to install a external package just for formatting. I replaced =hindent-mode= (haskell formatter) and a custom elixir formatter with this package. Also this package is used in =elm-mode= package.
+
+[fn:hindent] https://github.com/chrisdone/hindent
