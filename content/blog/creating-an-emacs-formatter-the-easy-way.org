@@ -5,7 +5,7 @@ tags: [ emacs, elisp ]
 type: posts
 ---
 
-Some weeks ago I discover a really nice package for emacs called [[https://github.com/purcell/reformatter.el][reformatter.el]]. This package allows to define reformat functions in a easy way.
+Some weeks ago I discovered a really nice package for emacs called [[https://github.com/purcell/reformatter.el][reformatter.el]]. This package allows to define reformat functions in a easy way.
 
 Most languages have a reformat tool. Elixir has =mix format=, Elm has =elm format=, python has =black= and so on. These formatters are convenient because they give uniformity to the code, but this is a topic for another post.
 
