@@ -1,6 +1,6 @@
 baseURL = "https://erick.navarro.io"
 languageCode = "en-us"
-title = "Some code and thoughts"
+title = "Erick Navarro"
 theme = "hugo-coder"
 markup = "org"
 pygmentsCodeFences = true
