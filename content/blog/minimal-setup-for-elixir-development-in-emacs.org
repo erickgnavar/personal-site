@@ -121,7 +121,7 @@ Now we can add this to our previous code:
 
 #+END_SRC
 
-Now if we press =C-c C-t= in a file(=my_test.exs=) where our where our cursor is on line 10, emacs will build the command =mix test my_test.exs:10= and run it in a compilation buffer.
+Now if we press =C-c C-t= in a file(=my_test.exs=) where our cursor is on line 10, emacs will build the command =mix test my_test.exs:10= and run it in a compilation buffer.
 
 ** Others useful packages
 
