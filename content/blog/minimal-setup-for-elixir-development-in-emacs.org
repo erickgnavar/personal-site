@@ -1,0 +1,135 @@
+---
+title: "Minimal Setup for Elixir development in Emacs"
+date: 2019-10-19T10:00:15-05:00
+tags: [ emacs, elixir ]
+type: posts
+---
+
+I've been working professionally with elixir for like 7 months by now and obviously using emacs as my daily editor. In this post we'll see some packages that could be useful for elixir development.
+
+I'm not using LSP(yet) so the goal here is to have a minimal setup for elixir development.
+
+We're going to use =use-package= to install all the needed packages.
+
+** Code highlighting
+
+We'll use [[https://github.com/elixir-editors/emacs-elixir/][elixir-mode]]. This package give us code highlighting support and some useful features like =mix-format= which let us format our code using =mix format= utility. This command is available since elixir 1.6
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package elixir-mode
+    :ensure t
+    :bind (:map elixir-mode-map
+                ("C-c C-f" . elixir-format)))
+
+#+END_SRC
+
+** Go to definition
+
+A LSP backed package like elixir-lsp could be way more accurate for this functionality but by now we're going to use [[https://github.com/jacktasia/dumb-jump][dumb-jump]].
+
+This package give us "go to definition" functionality just using regex. It has support for elixir out the box and it works pretty well.
+
+We're going to use =helm= to show the options when dumb-jump found many definitions for the same term.
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package dumb-jump
+    :ensure t
+    :init
+    (setq dumb-jump-selector 'helm))
+
+#+END_SRC
+
+** Snippets
+
+Using snippets could improve the speed of writing code. I'm using [[https://github.com/joaotavora/yasnippet][yasnippet]], a snippets template system, and also a set of snippets(for many languages including elixir) called [[https://github.com/AndreaCrotti/yasnippet-snippets][yasnippet-snippets]].
+
+We can install these packages with the following code. Notice that we're enabling yasnippet only for a few modes. If you want to you can enable it globally with =(yas-global-mode 1)=.
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package yasnippet
+    :ensure t
+    :hook ((prog-mode . yas-minor-mode)
+           (conf-mode . yas-minor-mode)
+           (text-mode . yas-minor-mode)
+           (snippet-mode . yas-minor-mode)))
+
+  (use-package yasnippet-snippets
+    :ensure t
+    :after (yasnippet))
+
+#+END_SRC
+
+** Running tests
+
+Running tests without leaving our editor is a nice to have feature in any editor/IDE. Unfortunately I haven't found any package that make this so I wrote some elisp code to accomplish this necessity.
+
+We're going to use feature called compile to accomplish this feature. Compile allows us to execute a shell command and print the resulting output in a "compilation" buffer so we can see the results.
+
+We can run tests using =mix test= in different ways
+
+- =mix test=: run all the tests within our project.
+- =mix test path_to_test_file.exs=: run the given test file.
+- =mix test path_to_test_file.exs:line_number=: run the test defined around the given line number.
+
+There are some other ways but these are the ones we're going to use.
+
+#+BEGIN_SRC emacs-lisp
+
+  (defun my/mix-run-test (&optional at-point)
+    "If AT-POINT is true it will pass the line number to mix test."
+    (interactive)
+    (let* ((current-file (buffer-file-name))
+           (current-line (line-number-at-pos))
+           (mix-file (concat (projectile-project-root) "mix.exs"))
+           (default-directory (file-name-directory mix-file))
+           (mix-env (concat "MIX_ENV=test ")))
+
+      (if at-point
+          (compile (format "%s mix test %s:%s" mix-env current-file current-line))
+        (compile (format "%s mix test %s" mix-env current-file)))))
+
+  (defun my/mix-run-test-file ()
+    "Run mix test over the current file."
+    (interactive)
+    (my/mix-run-test nil))
+
+  (defun my/mix-run-test-at-point ()
+    "Run mix test at point."
+    (interactive)
+    (my/mix-run-test t))
+
+#+END_SRC
+
+We have 3 functions, a "private" function called =my/mix-run-test= which will do all the "magic", this function will get some data about the context where it was called.
+We got the =current-file= and =current-line= from where the function was called. Now we're going to use this to build our shell command and then use this shell command to call =compile=.
+
+Now we can use this and create 2 more functions to expose 2 different behaviors. First we should have a way to run a entire test file and also run the test where the cursor is placed.
+We're going to use the latest to have a keybinding a run the test quickest.
+
+Now we can modify our previous code like this:
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package elixir-mode
+    :ensure t
+    :bind (:map elixir-mode-map
+                ("C-c C-f" . elixir-format)
+                ("C-c C-t" . my/mix-run-test-at-point)))
+
+#+END_SRC
+
+Now we can press =C-c C-t= for example in a file =my_test.exs= on line number 10 emacs will build the command =mix test my_test.exs:10= and run it in a compilation buffer.
+
+** Others useful packages
+
+- Projectile: maybe you already know this or even you're already using it. It's a package to handle many projects. It allows us to switch between projects easily.
+- Magit: The best interface so far for use git. If you haven't use it you definitively should give it a try.
+- direnv-mode: It's a package to load environment variables using a =.envrc= file. It's useful to load all the environment variables you need for a project.
+
+
+** Conclusion
+
+I use this setup with a few tweaks in my daily work and it works pretty well for my needs.
