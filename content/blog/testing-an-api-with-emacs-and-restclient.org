@@ -1,0 +1,303 @@
+---
+title: "Testing an API with emacs and restclient"
+date: 2019-10-27T16:53:00-06:00
+tags: [ emacs, api, http ]
+type: posts
+---
+
+When we're developing some application we frequently interact with APIs.
+
+There are applications like postman, httpie, insomnia and so on to accomplish this task but having an external application only to test a few endpoints or even a complex API is a little overkill.
+
+Using emacs and a great package called [[https://github.com/pashky/restclient.el][restclient.el]] we can have a very complete tool to handle API requests without leaving our favorite editor.
+
+** Installation
+
+Put these lines of code in your emacs configuration and you'll be ready to go.
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package restclient
+    :ensure t
+    :mode (("\\.http\\'" . restclient-mode)))
+
+#+END_SRC
+
+Here we're using =use-package= to install restclient.el and also we're configuring restclient to use extension =.http= to enable its features.
+
+Now if we open a file with =.http= extension restclient will be enabled automatically.
+
+** Example api
+
+We'll be using a example API to test the features of restclient so I prepared a little API in flask with a few endpoints to allow us to check the features of restclient.
+
+This is the code of the application in case you are curious
+
+#+BEGIN_SRC python
+
+  from uuid import uuid4
+
+  from flask import Flask, escape, jsonify, make_response, request
+
+  app = Flask(__name__)
+
+  items = [{"uid": uuid4().hex, "name": f"item {i + 1}"} for i in range(3)]
+
+
+  SECRET = "password"
+
+
+  @app.route("/")
+  def index():
+      name = request.args.get("name", "World")
+      return f"Hello, {escape(name)}!"
+
+
+  @app.route("/api")
+  def api():
+      return jsonify({"version": 1.0})
+
+
+  @app.route("/api/items")
+  def list_items():
+      return jsonify({"data": items})
+
+
+  @app.route("/api/items", methods=["post"])
+  def create_item():
+      if authenticated(request):
+          new_item = {"uid": uuid4().hex, "name": request.json.get("name")}
+          items.append(new_item)
+          return make_response(jsonify({"data": new_item}), 201)
+      else:
+          return make_response(jsonify({"error": "please provide credentiales"}), 401)
+
+
+  def authenticated(req):
+      token = req.headers.get("authorization")
+      return token is not None and token == SECRET
+
+#+END_SRC
+
+If you don't want to install any other software to test this API you can use a docker image that contains this application.
+
+Just run the following command and you'll have an API running on port =5000=.
+
+#+BEGIN_SRC shell
+
+  docker run -p 5000:5000 erickgnavar/restclient-api-example:0.1
+
+#+END_SRC
+
+Now we're ready to test out API using restclient.
+
+** Usage
+
+Let's see some examples of how can we use restclient from within emacs but first lets create a file called =api.http= and open it from emacs.
+
+*** Make a =GET= request
+
+We can execute this code using =C-c C-c= to show the results in the current buffer or use =C-c C-v= to show them in a new buffer.
+
+#+BEGIN_SRC restclient
+
+  GET http://localhost:5000/?name=guest
+  Content-Type: application/json
+
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC html
+Hello, guest!
+<!-- GET http://localhost:5000/?name=guest -->
+<!-- HTTP/1.0 200 OK -->
+<!-- Content-Type: text/html; charset=utf-8 -->
+<!-- Content-Length: 13 -->
+<!-- Server: Werkzeug/0.16.0 Python/3.6.9 -->
+<!-- Date: Tue, 29 Oct 2019 05:34:44 GMT -->
+<!-- Request duration: 0.023261s -->
+#+END_SRC
+
+As we can see we can define a http request in plain text. We just need to define the method and the URL of our API. In this case we're querying the root of the API. Also the response is presented in plain text including some useful data like http headers and the request duration. We can define the http request headers as well.
+
+In this case the response use an html format as we can see in the =Content-Type= response header.
+
+*** JSON responses
+
+Now lets try to fetch a json type endpoint. Restclient identifies the content-type of the response and use an emacs mode that fits with the content-type. In this case the response is a json object so restclient enable js-mode to present the response.
+
+#+BEGIN_SRC restclient
+
+  GET http://localhost:5000/api
+  Content-Type: application/json
+
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC js
+{
+  "version": 1.0
+}
+// GET http://localhost:5000/api
+// HTTP/1.0 200 OK
+// Content-Type: application/json
+// Content-Length: 16
+// Server: Werkzeug/0.16.0 Python/3.6.9
+// Date: Tue, 29 Oct 2019 05:42:01 GMT
+// Request duration: 0.025286s
+#+END_SRC
+
+Let's try with another endpoint that has more interesting information.
+
+#+BEGIN_SRC restclient
+
+  GET http://localhost:5000/api/items
+  Content-Type: application/json
+
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC js
+{
+  "data": [
+    {
+      "name": "item 1",
+      "uid": "931d90b493e944d9816061f46b57ce92"
+    },
+    {
+      "name": "item 2",
+      "uid": "edf9c8dda1ed4e8da205c53d9978ede2"
+    },
+    {
+      "name": "item 3",
+      "uid": "57a5146e3c98479785374f38e9e4c056"
+    }
+  ]
+}
+// GET http://localhost:5000/api/items
+// HTTP/1.0 200 OK
+// Content-Type: application/json
+// Content-Length: 188
+// Server: Werkzeug/0.16.0 Python/3.6.9
+// Date: Tue, 29 Oct 2019 05:42:33 GMT
+// Request duration: 0.026217s
+#+END_SRC
+
+*** Variables and dynamic content
+
+What happen if we need to pass some extra information to make an http request? In restclient we can have variables and we use them in the definition of the request. In this case we'll define a =password= variable which contains the required =Authorization= value to be able access to this endpoint. Also we can define the payload of the request, in this case a json object.
+
+First let's try a wrong password to see what happen.
+
+#+BEGIN_SRC restclient
+
+  :password = wrong-password
+
+  POST http://localhost:5000/api/items
+  Content-Type: application/json
+  Authorization: :password
+  {
+      "name": "new item"
+  }
+
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC js
+{
+  "error": "please provide credentiales"
+}
+// POST http://localhost:5000/api/items
+// HTTP/1.0 401 UNAUTHORIZED
+// Content-Type: application/json
+// Content-Length: 40
+// Server: Werkzeug/0.16.0 Python/3.6.9
+// Date: Tue, 29 Oct 2019 05:47:24 GMT
+// Request duration: 0.036553s
+#+END_SRC
+
+We received a 401 response because the credentiales we used are not correct. Now let's try it again but now with the correct credentials.
+
+#+BEGIN_SRC restclient
+
+  :password = password
+
+  POST http://localhost:5000/api/items
+  Content-Type: application/json
+  Authorization: :password
+  {
+      "name": "new item"
+  }
+
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC js
+{
+  "data": {
+    "name": "new item",
+    "uid": "f1ede16e39754b3eb735627e78d26146"
+  }
+}
+// POST http://localhost:5000/api/items
+// HTTP/1.0 201 CREATED
+// Content-Type: application/json
+// Content-Length: 70
+// Server: Werkzeug/0.16.0 Python/3.6.9
+// Date: Tue, 29 Oct 2019 05:48:15 GMT
+// Request duration: 0.034962s
+#+END_SRC
+
+As we can see the request was made successfully. Variables in restclient are evaluated at the time the request is made so we can define a variable and use it in as many requests as we want. This is useful when we're working with APIs that need some authentication to allow us to access to their endpoints. We can request a token then save it and use it for the rest of the request we've defined in our file.
+
+** Other useful features
+
+*** Convert request to curl format
+
+If we need to pass a request with its data to some friend who doesn't use emacs we can pass the request definition(it's just plain text after all) but we can also generate a =curl= command so it's going to be easy for anyone to test the request.
+
+We can use =C-c C-u= from within out request to generate a =curl= command. After we execute this keybinding the =curl= command will be copied to the clipboard.
+
+If we use this in our previous example we'll get the following =curl= command:
+
+#+BEGIN_SRC shell
+
+  curl -i -H Authorization\:\ password -H Content-Type\:\ application/json -XPOST http\://localhost\:5000/api/items -d \{'
+  '\ \ \ \ \"name\"\:\ \"new\ item\"'
+  '\}
+
+#+END_SRC
+
+Now we can paste this in a terminal and the request will be made.
+
+*** Navigate through the available requests
+
+From the same author we have =helm-restclient= this package allow us to jump easily to a specific request using the combination =C-c C-g=. This is useful if we are working with an extensive API and we want to find some request quickly.
+
+This package use =helm= to present the available options and when we chose one the cursor will jump to the selection.
+
+*** Formatting payload
+
+If we are using json as the request body we'll need to have it formatted in some way. We can use =json-mode= for accomplish this.
+
+Now our installation code will be:
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package json-mode
+    :ensure t)
+
+  (use-package restclient
+    :ensure t
+    :defer t
+    :mode (("\\.http\\'" . restclient-mode))
+    :bind (:map restclient-mode-map
+                ("C-c C-f" . json-mode-beautify)))
+
+#+END_SRC
+
+We're adding a new keybinding to =restclient-mode-map= so we can use =C-c C-f= to format the request body.
+
+** Conclusion
+
+Having our requests defined in plain text allow us to use it even as documentation and we don't depend of some external app that use a custom format to store these requests. We can freely pass this =.http= file to anyone and they will be able to read it and understanding it without the need to install an application.
