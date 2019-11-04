@@ -272,7 +272,7 @@ Now we can paste this in a terminal and the request will be made.
 
 *** Navigate through the available requests
 
-From the same author we have =helm-restclient= this package allow us to jump easily to a specific request using the combination =C-c C-g=. This is useful if we are working with an extensive API and we want to find some request quickly.
+From the same author we have =restclient-helm= this package allow us to jump easily to a specific request using the combination =C-c C-g=. This is useful if we are working with an extensive API and we want to find some request quickly.
 
 This package use =helm= to present the available options and when we chose one the cursor will jump to the selection.
 
