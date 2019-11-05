@@ -122,6 +122,24 @@ As we can see we can define a http request in plain text. We just need to define
 
 In this case the response use an html format as we can see in the =Content-Type= response header.
 
+#+BEGIN_QUOTE
+
+Note: when you create a file with many requests in it make sure you split them using a comment =#=, for example:
+
+#+BEGIN_SRC restclient
+
+  GET http://localhost:5000/?name=foo
+  # a split
+  GET http://localhost:5000/?name=bar
+  # a split
+  GET http://localhost:5000/?name=baz
+
+#+END_SRC
+
+If you don't add a separator an error will be raised when you try to execute the request.
+
+#+END_QUOTE
+
 *** JSON responses
 
 Now lets try to fetch a json type endpoint. Restclient identifies the content-type of the response and use an emacs mode that fits with the content-type. In this case the response is a json object so restclient enable js-mode to present the response.
