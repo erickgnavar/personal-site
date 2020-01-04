@@ -5,64 +5,61 @@ date: 2018-12-23T22:29:26-05:00
 
 ** Python libraries
 
-*** Serpost
-
-Link: [[https://pypi.org/project/serpost/][Pypi]]
-
-This package allows to fetch tracking data from Peruvian postal service [[http://www.serpost.com.pe][Serpost]] using a tracking number.
-
-*** Jasper Report tools (jr_tools)
-
-Link: [[https://pypi.org/project/jr_tools/][Pypi]]
-
-This package allows to upload and configure reports in Jasper Server. It uses a yaml based configuration file to define the reports, files, parameters, etc and upload them to Jasper Server through its API.
+#+attr_html: :width 100%
+|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Project  | Description                                                                                                                                                                           |
+|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[https://pypi.org/project/serpost/][Serpost]]  | Fetch tracking data from Peruvian postal service [[http://www.serpost.com.pe][Serpost]] using a tracking number                                                                                                      |
+|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[https://pypi.org/project/jr_tools/][jr_tools]] | Upload and configure reports in Jasper Server. It uses a yaml based configuration file to define the reports, files, parameters, etc and upload them to Jasper Server through its API |
+|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 ** Odoo modules
 
-*** Import RxH
-
-Link: [[https://apps.odoo.com/apps/modules/11.0/l10n_pe_import_rxh/][l10n_pe_import_rxh]]
-
-This modules allows to read an RxH(a Peruvian invoice emitted by freelance workers) XML document and import its content to Odoo, this module convert the RxH into a supplier invoice.
-
-*** Serpost Tracking for sales and purchases
-
-Links: [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_sale/][tracking_serpost_sale]], [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_purchase/][tracking_serpost_purchase]]
-
-These modules allow to integrate the tracking data obtained from [[http://www.serpost.com.pe][Serpost]] with sale and purchase orders in Odoo.
+#+attr_html: :width 100%
+|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Project                   | Description                                                                                                                                                   |
+|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[https://apps.odoo.com/apps/modules/11.0/l10n_pe_import_rxh/][l10n_pe_import_rxh]]        | Read an RxH(a Peruvian invoice emitted by freelance workers) XML document and import its content to Odoo, this module convert the RxH into a supplier invoice |
+|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_purchase/][tracking_serpost_purchase]] | Integrate [[http://www.serpost.com.pe][Serpost]] tracking data in purchase orders                                                                                                            |
+|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_sale/][tracking_serpost_sale]]     | Integrate [[http://www.serpost.com.pe][Serpost]] tracking data in sale orders                                                                                                                |
+|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 ** Emacs packages
 
-*** linkode.el
-
-Link: [[https://github.com/erickgnavar/linkode.el][Github]]
-
-This package allows to upload the code within a buffer or a region in Emacs to [[http://linkode.org][linkode.org]] (a pastebin like service).
+#+attr_html: :width 100%
+| Project    | Description                                                                                |
+|------------+--------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/linkode.el][linkode.el]] | Upload code within a buffer or a region in Emacs to [[http://linkode.org][linkode.org]] (a pastebin like service). |
+|------------+--------------------------------------------------------------------------------------------|
 
 ** Alfred workflows
 
-*** Coinstats
+#+attr_html: :width 100%
+|-------------------+---------------------------------------------------------------------------------------------------|
+| Project           | Description                                                                                       |
+|-------------------+---------------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/coinstats-alfred-workflow][coinstats]]         | Ask for a crypto currency price in [[https://coinmarketcap.com][Coinmarketcap]] API.                                             |
+|-------------------+---------------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/currency-exchange-alfred-workflow][currency-exchange]] | Convert amounts between currencies using the rate from [[https://free.currencyconverterapi.com]] API. |
+|-------------------+---------------------------------------------------------------------------------------------------|
 
-Link: [[https://github.com/erickgnavar/coinstats-alfred-workflow][Github]]
+** Web apps
 
-This workflow allows to ask for a crypto currency price in [[https://coinmarketcap.com][Coinmarketcap]] API.
+#+attr_html: :width 100%
+|---------+--------------------------------------------------------------------------------------------------------------------------------------|
+| Project | Description                                                                                                                          |
+|---------+--------------------------------------------------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/proma][proma]]   | Manage clients, projects, time sheets, etc. It is useful to emit invoices and have records of the projects you have been working on. |
+|---------+--------------------------------------------------------------------------------------------------------------------------------------|
 
-*** Currency exchange
+** macOS apps
 
-Link: [[https://github.com/erickgnavar/currency-exchange-alfred-workflow][Github]]
-
-This workflow allows to convert amounts between currencies using the rate from [[https://free.currencyconverterapi.com]] API.
-
-** Other projects
-
-*** Proma
-
-Link: [[https://github.com/erickgnavar/proma][Github]]
-
-This is a =Django= based application that allows to manage clients, projects, time sheets, etc. It is useful to emit invoices and have records of the projects you have working on.
-
-*** Dynowall
-
-Link: [[http://erickgnavar.github.io/dynowall/][website]]
-
-This is a =mac OS= application written in =swift= that allows to change the wallpaper using [[https://unsplash.com][Unsplash]] images.
+#+attr_html: :width 100%
+|----------+-------------------------------------------------|
+| Project  | Description                                     |
+|----------+-------------------------------------------------|
+| [[http://erickgnavar.github.io/dynowall/][dynowall]] | Change desktop wallpaper using [[https://unsplash.com][Unsplash]] images. |
+|----------+-------------------------------------------------|
