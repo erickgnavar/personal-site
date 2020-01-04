@@ -22,6 +22,8 @@ pygmentsCodeFences = true
   rtl = false
   math = true
 
+  colorscheme = "auto"
+
 [[params.social]]
   name = "Twitter"
   icon = "fab fa-twitter fa-2x"
