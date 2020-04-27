@@ -11,20 +11,18 @@ I'm not using LSP (yet), so the goal here is just to have a minimal setup for El
 
 We're going to use =use-package= to install all the needed packages.
 
-** Syntax highlighting
+* Syntax highlighting
 
 We'll use [[https://github.com/Elixir-editors/emacs-Elixir/][Elixir-mode]]. This package give us syntax highlighting support and some useful features like =mix-format= which let us format our code using =mix format= task, which is available since Elixir 1.6
 
 #+BEGIN_SRC emacs-lisp
-
   (use-package elixir-mode
     :ensure t
     :bind (:map elixir-mode-map
                 ("C-c C-f" . elixir-format)))
-
 #+END_SRC
 
-** Go to definition
+* Go to definition
 
 A LSP backed package like =elixir-lsp= could be way more accurate for this functionality but now we're going to use [[https://github.com/jacktasia/dumb-jump][dumb-jump]].
 
@@ -33,22 +31,19 @@ This package give us "go to definition" functionality just using regex. It has s
 We'll use =helm= to show the different options when dumb-jump finds more than one definition for the same term.
 
 #+BEGIN_SRC emacs-lisp
-
   (use-package dumb-jump
     :ensure t
     :init
     (setq dumb-jump-selector 'helm))
-
 #+END_SRC
 
-** Snippets
+* Snippets
 
 Using snippets can improve the speed of writing code. I'm using [[https://github.com/joaotavora/yasnippet][yasnippet]], a snippets template system, and also a set of snippets(for many languages including Elixir) called [[https://github.com/AndreaCrotti/yasnippet-snippets][yasnippet-snippets]].
 
 We can install these packages with the following code. Notice that we're enabling yasnippet only for a few modes. If you want to you can enable it globally using =(yas-global-mode 1)=.
 
 #+BEGIN_SRC emacs-lisp
-
   (use-package yasnippet
     :ensure t
     :hook ((prog-mode . yas-minor-mode)
@@ -59,10 +54,9 @@ We can install these packages with the following code. Notice that we're enablin
   (use-package yasnippet-snippets
     :ensure t
     :after (yasnippet))
-
 #+END_SRC
 
-** Running tests
+* Running tests
 
 Running tests without leaving our editor is a nice feature to have in any editor/IDE. Unfortunately I haven't found any package that does this, so I wrote some elisp code to accomplish it.
 
@@ -77,7 +71,6 @@ We can run tests using =mix test= in different ways
 There are some other ways but these are the ones we're going to use.
 
 #+BEGIN_SRC emacs-lisp
-
   (defun my/mix-run-test (&optional at-point)
     "If AT-POINT is true it will pass the line number to mix test."
     (interactive)
@@ -100,7 +93,6 @@ There are some other ways but these are the ones we're going to use.
     "Run mix test at point."
     (interactive)
     (my/mix-run-test t))
-
 #+END_SRC
 
 We have three functions, a "private" function called =my/mix-run-test= which will do all the "magic", this function will get some data about the context where it was called.
@@ -112,24 +104,21 @@ We're going to use the latest to have a keybinding a run the test quickest.
 Now we can add this to our previous code:
 
 #+BEGIN_SRC emacs-lisp
-
   (use-package elixir-mode
     :ensure t
     :bind (:map elixir-mode-map
                 ("C-c C-f" . elixir-format)
                 ("C-c C-t" . my/mix-run-test-at-point)))
-
 #+END_SRC
 
 Now if we press =C-c C-t= in a file(=my_test.exs=) where our cursor is on line 10, emacs will build the command =mix test my_test.exs:10= and run it in a compilation buffer.
 
-** Others useful packages
+* Others useful packages
 
 - Projectile: It's a package to handle many projects. It allows us to switch between projects easily.
 - Magit: The best interface so far for use git. If you haven't use it you definitively should give it a try.
 - direnv-mode: It's a package to load environment variables using a =.envrc= file. It's useful to load all the environment variables you need for a project.
 
-
-** Conclusion
+* Conclusion
 
 I use this setup with a few tweaks in my daily work and it works pretty well for my needs.

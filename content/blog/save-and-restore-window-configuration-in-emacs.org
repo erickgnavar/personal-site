@@ -10,7 +10,6 @@ When we are using =emacs= sometimes we often open many buffers in different wind
 There are some tools to manage "sessions" but I wanted something simple and I also wanted to learn a little bit more of =elisp= so here is the result.
 
 #+BEGIN_SRC emacs-lisp
-
   (defvar window-snapshots '())
 
   (defun save-window-snapshot ()
@@ -33,7 +32,6 @@ There are some tools to manage "sessions" but I wanted something simple and I al
       (if snapshot
           (set-window-configuration snapshot)
         (message "Snapshot %s not found" snapshot-name))))
-
 #+END_SRC
 
 The code basically do 3 things:
@@ -44,12 +42,11 @@ The code basically do 3 things:
 
 Now let's get into the details:
 
-** Save the current window configuration
+* Save the current window configuration
 
 We will use the function =current-window-configuration= to get the current state of the windows and put this value in an =alist= called =window-snapshots=. Also it should asks for a name so we can search for it later.
 
 #+BEGIN_SRC emacs-lisp
-
   (defvar window-snapshots '())
 
   (defun save-window-snapshot ()
@@ -58,17 +55,15 @@ We will use the function =current-window-configuration= to get the current state
     (let ((key (read-string "Enter a name for the snapshot: ")))
       (setf (alist-get key window-snapshots) (current-window-configuration))
       (message "%s window snapshot saved!" key)))
-
 #+END_SRC
 
-** Restore a window configuration
+* Restore a window configuration
 
 We will use =completing-read= to select one of the saved snapshots from an interactive list. It will use =helm= [fn:helm] or =ivy= [fn:ivy] if any of those are installed otherwise it will show the options in the =minibuffer=.
 
 This will show the =name= used before and retrieve the value of the window configuration. Then it will apply the configuration using =set-window-configuration=.
 
 #+BEGIN_SRC emacs-lisp
-
   (defun get-window-snapshot (key)
     "Given a KEY return the saved value in `window-snapshots` alist."
     (let ((value (assoc key window-snapshots)))
@@ -82,7 +77,6 @@ This will show the =name= used before and retrieve the value of the window confi
       (if snapshot
           (set-window-configuration snapshot)
         (message "Snapshot %s not found" snapshot-name))))
-
 #+END_SRC
 
 [fn:helm] https://emacs-helm.github.io/helm/

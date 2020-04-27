@@ -16,10 +16,8 @@ Having these formatters integrated within our favorite editor is great. These ar
 For this example we'll create a formatter for haskell using =hindent= [fn:hindent].
 
 #+BEGIN_SRC emacs-lisp
-
   (reformatter-define haskell-format
     :program "hindent")
-
 #+END_SRC
 
 We just need to define the command that will be used to format the code. In this case =hindent=. This will create some useful functions:
@@ -32,17 +30,13 @@ We just need to define the command that will be used to format the code. In this
 These functions can be used with a key-binding:
 
 #+BEGIN_SRC emacs-lisp
-
   (define-key haskell-mode-map (kbd "C-c C-f") 'haskell-format-buffer)
-
 #+END_SRC
 
 Also we can setup emacs to run the formatter when the file is saved, for example put this code in your =.dir-locals.el= and it will do the work.
 
 #+BEGIN_SRC emacs-lisp
-
   (haskell-mode (mode . haskell-format-on-save))
-
 #+END_SRC
 
 The program used to format our code needs to be able to read from =stdin= and return the formatted code to =stdout=. In this case =hindent= does it by default.
@@ -50,11 +44,9 @@ The program used to format our code needs to be able to read from =stdin= and re
 In some cases the formatter doesn't do this by default. For those cases we can pass extra arguments to the command using =:args= key in the formatter macro. For example =elixir format= receive a file or a pattern by default but we can change that using =mix format -=, now it will read from =stdin=, so we need to pass these parameters to our formatter. The code should be:
 
 #+BEGIN_SRC emacs-lisp
-
   (reformatter-define elixir-format
     :program "mix"
     :args '("format" "-"))
-
 #+END_SRC
 
 Now it will work properly.
