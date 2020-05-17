@@ -1,0 +1,71 @@
+---
+title: "Creating helper commands for k8s using fzf"
+date: 2020-05-17T00:13:20-05:00
+type: posts
+tags: [ k8s, shell ]
+---
+
+Kubernetes cli tool =kubectl= is pretty useful but when I need to execute some tasks many times during a work day it could be too verbose. So I wrote some bash functions to handle a few common tasks I use often.
+
+I used the power of [[https://github.com/junegunn/fzf][fzf]] to create an interactive experience when I run any of these functions. Basically it pipes the output of a =kubectl= command, make some filtering using =sed= and =awk= and then build a final command which will execute what I want.
+
+The common behavior of these functions is first ask for a =namespace= and then ask for a specific =pod= to make some action over its.
+
+We can see an example of how it works in the image below:
+
+#+CAPTION: Running pod_shell
+#+NAME: fig:pod-shell
+#+ATTR_HTML: :style display:block;margin-left:auto;margin-right:auto;
+[[file:/images/creating-helper-commands-for-k8s-using-fzf/pod_shell.gif]]
+
+* Open a shell or a custom command inside a pod
+
+If we execute =pod_shell= without any argument it will connect to the selected pod and run =bash=, otherwise it will run the given command.
+
+#+begin_src shell
+function pod_shell {
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    echo "Connecting to $pod"
+
+    if [ -z $1 ]
+    then
+        kubectl -n $namespace exec -ti $pod bash
+    else
+        kubectl -n $namespace exec -ti $pod $1
+    fi
+}
+#+end_src
+
+* Run a proxy over a pod
+
+Same as the previous function but this one ask for a port mapping, for example =9999:5432= will map the port =9999= from the host machine to =5432= port on the pod.
+
+#+begin_src shell
+function pod_proxy {
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    local port_mapping
+    echo "Enter port mapping using the form local_port:pod_port"
+    read port_mapping
+    echo "Setting up proxy to $pod on $port_mapping..."
+
+    kubectl port-forward -n $namespace $pod $port_mapping
+}
+#+end_src
+
+* See realtime logs for a given pod
+
+This one just ask for a pod and attach a =kubectl= log command.
+
+#+begin_src shell
+function pod_logs {
+    local namespace=`kubectl get ns | sed 1d | awk '{print $1}' | fzf`
+    local pod=`kubectl get pods -n $namespace | sed 1d | awk '{print $1}' | fzf`
+    echo "Showing logs for $pod"
+
+    kubectl -n $namespace logs -f $pod
+}
+#+end_src
+
+These are some common tasks I need for a day of work but with the same logic we can build some other commands.
