@@ -1,7 +1,7 @@
 ---
 title: "Save and Restore Window Configuration in Emacs"
 date: 2018-12-25T10:18:56-05:00
-tags: [ emacs ]
+tags: [ emacs, elisp ]
 type: posts
 ---
 
@@ -10,28 +10,28 @@ When we are using =emacs= sometimes we often open many buffers in different wind
 There are some tools to manage "sessions" but I wanted something simple and I also wanted to learn a little bit more of =elisp= so here is the result.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar window-snapshots '())
+(defvar window-snapshots '())
 
-  (defun save-window-snapshot ()
-    "Save the current window configuration into `window-snapshots` alist."
-    (interactive)
-    (let ((key (read-string "Enter a name for the snapshot: ")))
-      (setf (alist-get key window-snapshots) (current-window-configuration))
-      (message "%s window snapshot saved!" key)))
+(defun save-window-snapshot ()
+  "Save the current window configuration into `window-snapshots` alist."
+  (interactive)
+  (let ((key (read-string "Enter a name for the snapshot: ")))
+    (setf (alist-get key window-snapshots) (current-window-configuration))
+    (message "%s window snapshot saved!" key)))
 
-  (defun get-window-snapshot (key)
-    "Given a KEY return the saved value in `window-snapshots` alist."
-    (let ((value (assoc key window-snapshots)))
-      (cdr value)))
+(defun get-window-snapshot (key)
+  "Given a KEY return the saved value in `window-snapshots` alist."
+  (let ((value (assoc key window-snapshots)))
+    (cdr value)))
 
-  (defun restore-window-snapshot ()
-    "Restore a window snapshot from the window-snapshots alist."
-    (interactive)
-    (let* ((snapshot-name (completing-read "Choose snapshot: " (mapcar #'car window-snapshots)))
-           (snapshot (get-window-snapshot snapshot-name)))
-      (if snapshot
-          (set-window-configuration snapshot)
-        (message "Snapshot %s not found" snapshot-name))))
+(defun restore-window-snapshot ()
+  "Restore a window snapshot from the window-snapshots alist."
+  (interactive)
+  (let* ((snapshot-name (completing-read "Choose snapshot: " (mapcar #'car window-snapshots)))
+	 (snapshot (get-window-snapshot snapshot-name)))
+    (if snapshot
+	(set-window-configuration snapshot)
+      (message "Snapshot %s not found" snapshot-name))))
 #+END_SRC
 
 The code basically do 3 things:
@@ -47,14 +47,14 @@ Now let's get into the details:
 We will use the function =current-window-configuration= to get the current state of the windows and put this value in an =alist= called =window-snapshots=. Also it should asks for a name so we can search for it later.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar window-snapshots '())
+(defvar window-snapshots '())
 
-  (defun save-window-snapshot ()
-    "Save the current window configuration into `window-snapshots` alist."
-    (interactive)
-    (let ((key (read-string "Enter a name for the snapshot: ")))
-      (setf (alist-get key window-snapshots) (current-window-configuration))
-      (message "%s window snapshot saved!" key)))
+(defun save-window-snapshot ()
+  "Save the current window configuration into `window-snapshots` alist."
+  (interactive)
+  (let ((key (read-string "Enter a name for the snapshot: ")))
+    (setf (alist-get key window-snapshots) (current-window-configuration))
+    (message "%s window snapshot saved!" key)))
 #+END_SRC
 
 * Restore a window configuration
@@ -64,19 +64,19 @@ We will use =completing-read= to select one of the saved snapshots from an inter
 This will show the =name= used before and retrieve the value of the window configuration. Then it will apply the configuration using =set-window-configuration=.
 
 #+BEGIN_SRC emacs-lisp
-  (defun get-window-snapshot (key)
-    "Given a KEY return the saved value in `window-snapshots` alist."
-    (let ((value (assoc key window-snapshots)))
-      (cdr value)))
+(defun get-window-snapshot (key)
+  "Given a KEY return the saved value in `window-snapshots` alist."
+  (let ((value (assoc key window-snapshots)))
+    (cdr value)))
 
-  (defun restore-window-snapshot ()
-    "Restore a window snapshot from the window-snapshots alist."
-    (interactive)
-    (let* ((snapshot-name (completing-read "Choose snapshot: " (mapcar #'car window-snapshots)))
-           (snapshot (get-window-snapshot snapshot-name)))
-      (if snapshot
-          (set-window-configuration snapshot)
-        (message "Snapshot %s not found" snapshot-name))))
+(defun restore-window-snapshot ()
+  "Restore a window snapshot from the window-snapshots alist."
+  (interactive)
+  (let* ((snapshot-name (completing-read "Choose snapshot: " (mapcar #'car window-snapshots)))
+	 (snapshot (get-window-snapshot snapshot-name)))
+    (if snapshot
+	(set-window-configuration snapshot)
+      (message "Snapshot %s not found" snapshot-name))))
 #+END_SRC
 
 [fn:helm] https://emacs-helm.github.io/helm/

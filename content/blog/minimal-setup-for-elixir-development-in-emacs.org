@@ -16,10 +16,10 @@ We're going to use =use-package= to install all the needed packages.
 We'll use [[https://github.com/Elixir-editors/emacs-Elixir/][Elixir-mode]]. This package give us syntax highlighting support and some useful features like =mix-format= which let us format our code using =mix format= task, which is available since Elixir 1.6
 
 #+BEGIN_SRC emacs-lisp
-  (use-package elixir-mode
-    :ensure t
-    :bind (:map elixir-mode-map
-                ("C-c C-f" . elixir-format)))
+(use-package elixir-mode
+  :ensure t
+  :bind (:map elixir-mode-map
+	      ("C-c C-f" . elixir-format)))
 #+END_SRC
 
 * Go to definition
@@ -31,10 +31,10 @@ This package give us "go to definition" functionality just using regex. It has s
 We'll use =helm= to show the different options when dumb-jump finds more than one definition for the same term.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package dumb-jump
-    :ensure t
-    :init
-    (setq dumb-jump-selector 'helm))
+(use-package dumb-jump
+  :ensure t
+  :init
+  (setq dumb-jump-selector 'helm))
 #+END_SRC
 
 * Snippets
@@ -44,16 +44,16 @@ Using snippets can improve the speed of writing code. I'm using [[https://github
 We can install these packages with the following code. Notice that we're enabling yasnippet only for a few modes. If you want to you can enable it globally using =(yas-global-mode 1)=.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :hook ((prog-mode . yas-minor-mode)
-           (conf-mode . yas-minor-mode)
-           (text-mode . yas-minor-mode)
-           (snippet-mode . yas-minor-mode)))
+(use-package yasnippet
+  :ensure t
+  :hook ((prog-mode . yas-minor-mode)
+	 (conf-mode . yas-minor-mode)
+	 (text-mode . yas-minor-mode)
+	 (snippet-mode . yas-minor-mode)))
 
-  (use-package yasnippet-snippets
-    :ensure t
-    :after (yasnippet))
+(use-package yasnippet-snippets
+  :ensure t
+  :after (yasnippet))
 #+END_SRC
 
 * Running tests
@@ -71,28 +71,28 @@ We can run tests using =mix test= in different ways
 There are some other ways but these are the ones we're going to use.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my/mix-run-test (&optional at-point)
-    "If AT-POINT is true it will pass the line number to mix test."
-    (interactive)
-    (let* ((current-file (buffer-file-name))
-           (current-line (line-number-at-pos))
-           (mix-file (concat (projectile-project-root) "mix.exs"))
-           (default-directory (file-name-directory mix-file))
-           (mix-env (concat "MIX_ENV=test ")))
+(defun my/mix-run-test (&optional at-point)
+  "If AT-POINT is true it will pass the line number to mix test."
+  (interactive)
+  (let* ((current-file (buffer-file-name))
+	 (current-line (line-number-at-pos))
+	 (mix-file (concat (projectile-project-root) "mix.exs"))
+	 (default-directory (file-name-directory mix-file))
+	 (mix-env (concat "MIX_ENV=test ")))
 
-      (if at-point
-          (compile (format "%s mix test %s:%s" mix-env current-file current-line))
-        (compile (format "%s mix test %s" mix-env current-file)))))
+    (if at-point
+	(compile (format "%s mix test %s:%s" mix-env current-file current-line))
+      (compile (format "%s mix test %s" mix-env current-file)))))
 
-  (defun my/mix-run-test-file ()
-    "Run mix test over the current file."
-    (interactive)
-    (my/mix-run-test nil))
+(defun my/mix-run-test-file ()
+  "Run mix test over the current file."
+  (interactive)
+  (my/mix-run-test nil))
 
-  (defun my/mix-run-test-at-point ()
-    "Run mix test at point."
-    (interactive)
-    (my/mix-run-test t))
+(defun my/mix-run-test-at-point ()
+  "Run mix test at point."
+  (interactive)
+  (my/mix-run-test t))
 #+END_SRC
 
 We have three functions, a "private" function called =my/mix-run-test= which will do all the "magic", this function will get some data about the context where it was called.
@@ -104,11 +104,11 @@ We're going to use the latest to have a keybinding a run the test quickest.
 Now we can add this to our previous code:
 
 #+BEGIN_SRC emacs-lisp
-  (use-package elixir-mode
-    :ensure t
-    :bind (:map elixir-mode-map
-                ("C-c C-f" . elixir-format)
-                ("C-c C-t" . my/mix-run-test-at-point)))
+(use-package elixir-mode
+  :ensure t
+  :bind (:map elixir-mode-map
+	      ("C-c C-f" . elixir-format)
+	      ("C-c C-t" . my/mix-run-test-at-point)))
 #+END_SRC
 
 Now if we press =C-c C-t= in a file(=my_test.exs=) where our cursor is on line 10, emacs will build the command =mix test my_test.exs:10= and run it in a compilation buffer.

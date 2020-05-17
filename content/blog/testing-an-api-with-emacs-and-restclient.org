@@ -16,9 +16,9 @@ Using emacs and a great package called [[https://github.com/pashky/restclient.el
 Put these lines of code in your emacs configuration and you'll be ready to go.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package restclient
-    :ensure t
-    :mode (("\\.http\\'" . restclient-mode)))
+(use-package restclient
+  :ensure t
+  :mode (("\\.http\\'" . restclient-mode)))
 #+END_SRC
 
 Here we're using =use-package= to install restclient.el and also we're configuring restclient to use extension =.http= to enable its features.
@@ -32,47 +32,47 @@ We'll be using a example API to test the features of restclient so I prepared a 
 This is the code of the application in case you are curious
 
 #+BEGIN_SRC python
-  from uuid import uuid4
+from uuid import uuid4
 
-  from flask import Flask, escape, jsonify, make_response, request
+from flask import Flask, escape, jsonify, make_response, request
 
-  app = Flask(__name__)
+app = Flask(__name__)
 
-  items = [{"uid": uuid4().hex, "name": f"item {i + 1}"} for i in range(3)]
-
-
-  SECRET = "password"
+items = [{"uid": uuid4().hex, "name": f"item {i + 1}"} for i in range(3)]
 
 
-  @app.route("/")
-  def index():
-      name = request.args.get("name", "World")
-      return f"Hello, {escape(name)}!"
+SECRET = "password"
 
 
-  @app.route("/api")
-  def api():
-      return jsonify({"version": 1.0})
+@app.route("/")
+def index():
+    name = request.args.get("name", "World")
+    return f"Hello, {escape(name)}!"
 
 
-  @app.route("/api/items")
-  def list_items():
-      return jsonify({"data": items})
+@app.route("/api")
+def api():
+    return jsonify({"version": 1.0})
 
 
-  @app.route("/api/items", methods=["post"])
-  def create_item():
-      if authenticated(request):
-          new_item = {"uid": uuid4().hex, "name": request.json.get("name")}
-          items.append(new_item)
-          return make_response(jsonify({"data": new_item}), 201)
-      else:
-          return make_response(jsonify({"error": "please provide credentiales"}), 401)
+@app.route("/api/items")
+def list_items():
+    return jsonify({"data": items})
 
 
-  def authenticated(req):
-      token = req.headers.get("authorization")
-      return token is not None and token == SECRET
+@app.route("/api/items", methods=["post"])
+def create_item():
+    if authenticated(request):
+        new_item = {"uid": uuid4().hex, "name": request.json.get("name")}
+        items.append(new_item)
+        return make_response(jsonify({"data": new_item}), 201)
+    else:
+        return make_response(jsonify({"error": "please provide credentiales"}), 401)
+
+
+def authenticated(req):
+    token = req.headers.get("authorization")
+    return token is not None and token == SECRET
 #+END_SRC
 
 If you don't want to install any other software to test this API you can use a docker image that contains this application.
@@ -80,7 +80,7 @@ If you don't want to install any other software to test this API you can use a d
 Just run the following command and you'll have an API running on port =5000=.
 
 #+BEGIN_SRC shell
-  docker run -p 5000:5000 erickgnavar/restclient-api-example:0.1
+docker run -p 5000:5000 erickgnavar/restclient-api-example:0.1
 #+END_SRC
 
 Now we're ready to test out API using restclient.
@@ -94,8 +94,8 @@ Let's see some examples of how can we use restclient from within emacs but first
 We can execute this code using =C-c C-c= to show the results in the current buffer or use =C-c C-v= to show them in a new buffer.
 
 #+BEGIN_SRC restclient
-  GET http://localhost:5000/?name=guest
-  Content-Type: application/json
+GET http://localhost:5000/?name=guest
+Content-Type: application/json
 #+END_SRC
 
 Result:
@@ -120,11 +120,11 @@ Note: when you create a file with many requests in it make sure you split them u
 
 #+BEGIN_SRC restclient
 
-  GET http://localhost:5000/?name=foo
-  # a split
-  GET http://localhost:5000/?name=bar
-  # a split
-  GET http://localhost:5000/?name=baz
+GET http://localhost:5000/?name=foo
+# a split
+GET http://localhost:5000/?name=bar
+# a split
+GET http://localhost:5000/?name=baz
 
 #+END_SRC
 
@@ -136,8 +136,8 @@ If you don't add a separator an error will be raised when you try to execute the
 Now lets try to fetch a json type endpoint. Restclient identifies the content-type of the response and use an emacs mode that fits with the content-type. In this case the response is a json object so restclient enable js-mode to present the response.
 
 #+BEGIN_SRC restclient
-  GET http://localhost:5000/api
-  Content-Type: application/json
+GET http://localhost:5000/api
+Content-Type: application/json
 #+END_SRC
 
 Result:
@@ -158,8 +158,8 @@ Result:
 Let's try with another endpoint that has more interesting information.
 
 #+BEGIN_SRC restclient
-  GET http://localhost:5000/api/items
-  Content-Type: application/json
+GET http://localhost:5000/api/items
+Content-Type: application/json
 #+END_SRC
 
 Result:
@@ -197,14 +197,14 @@ What happen if we need to pass some extra information to make an http request? I
 First let's try a wrong password to see what happen.
 
 #+BEGIN_SRC restclient
-  :password = wrong-password
+:password = wrong-password
 
-  POST http://localhost:5000/api/items
-  Content-Type: application/json
-  Authorization: :password
-  {
-      "name": "new item"
-  }
+POST http://localhost:5000/api/items
+Content-Type: application/json
+Authorization: :password
+{
+    "name": "new item"
+}
 #+END_SRC
 
 Result:
@@ -225,14 +225,14 @@ Result:
 We received a 401 response because the credentiales we used are not correct. Now let's try it again but now with the correct credentials.
 
 #+BEGIN_SRC restclient
-  :password = password
+:password = password
 
-  POST http://localhost:5000/api/items
-  Content-Type: application/json
-  Authorization: :password
-  {
-      "name": "new item"
-  }
+POST http://localhost:5000/api/items
+Content-Type: application/json
+Authorization: :password
+{
+    "name": "new item"
+}
 #+END_SRC
 
 Result:
@@ -286,15 +286,15 @@ If we are using json as the request body we'll need to have it formatted in some
 Now our installation code will be:
 
 #+BEGIN_SRC emacs-lisp
-  (use-package json-mode
-    :ensure t)
+(use-package json-mode
+  :ensure t)
 
-  (use-package restclient
-    :ensure t
-    :defer t
-    :mode (("\\.http\\'" . restclient-mode))
-    :bind (:map restclient-mode-map
-                ("C-c C-f" . json-mode-beautify)))
+(use-package restclient
+  :ensure t
+  :defer t
+  :mode (("\\.http\\'" . restclient-mode))
+  :bind (:map restclient-mode-map
+	      ("C-c C-f" . json-mode-beautify)))
 #+END_SRC
 
 We're adding a new keybinding to =restclient-mode-map= so we can use =C-c C-f= to format the request body.
