@@ -1,0 +1,75 @@
+---
+title: "Avoid losing window layout when editing org code blocks"
+date: 2020-05-16T15:39:10-05:00
+type: posts
+tags: [ emacs, elisp, org-mode ]
+---
+
+Org-mode has a nice feature that allow us to edit source code within an org file, for more info check the [[https://orgmode.org/manual/Working-with-Source-Code.html][docs]]. But it has a little annoying behavior after we are done editing a source block. It loses the previous window configuration and always closes all the windows except the org window.
+
+In the image below we can see this behavior:
+
+#+CAPTION: Before patch
+#+NAME: fig:before-patch
+[[file:/images/avoid-losing-window-layout-when-editing-org-code-blocks/before.gif]]
+
+To solve this problem we can use a =register= to save the current window configuration just before the source code edition buffer is opened and when it's closed we can restore the previous configuration just getting the value from the =register= used before. We're defining two functions to accomplish this behavior, one to run before and one after we're done editing the source block.
+
+#+begin_src emacs-lisp
+(defconst my/org-edit-block-register ?o)
+
+(defun my/org-edit-special (&optional arg)
+  "Save current window configuration before a org-edit buffer is open."
+  (set-register my/org-edit-block-register (current-window-configuration)))
+
+(defun my/org-edit-src-exit ()
+  "Restore the window configuration that was saved before org-edit-special was called."
+  (set-window-configuration (get-register my/org-edit-block-register)))
+#+end_src
+
+Now we need to "attach" these two functions to the default behavior of org-mode, to do this we can use [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advice-add]] elisp function, this function allow us to "attach" some functionality to an existing function.
+
+The two functions that we need to advice are:
+
+- =org-edit-special=: this function is called when we press =C-c C-'= and allow us to edit source block in a dedicated buffer.
+- =org-edit-src-exit=: this function is called when we press =C-c C-'= from inside of the opened buffer, it closes the buffer and return us to the org buffer.
+
+
+ =my/org-edit-special= will run just before =org-edit-special= is called and =my/org-edit-src-exit= after =org-edit-src-exit= is called.
+
+We need to execute this code after org is loaded so we use =eval-after-load=.
+
+#+begin_src emacs-lisp
+(eval-after-load "org"
+  `(progn
+     (advice-add 'org-edit-special :before 'my/org-edit-special)
+     (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)))
+#+end_src
+
+The full code will be:
+
+#+begin_src emacs-lisp
+(defconst my/org-edit-block-register ?o)
+
+(defun my/org-edit-special (&optional arg)
+  "Save current window configuration before a org-edit buffer is open."
+  (set-register my/org-edit-block-register (current-window-configuration)))
+
+(defun my/org-edit-src-exit ()
+  "Restore the window configuration that was saved before org-edit-special was called."
+  (set-window-configuration (get-register my/org-edit-block-register)))
+
+(eval-after-load "org"
+  `(progn
+     (advice-add 'org-edit-special :before 'my/org-edit-special)
+     (advice-add 'org-edit-src-exit :after 'my/org-edit-src-exit)))
+
+#+end_src
+
+After applying the complete code the result will be:
+
+#+CAPTION: After patch
+#+NAME: fig:after-patch
+[[file:/images/avoid-losing-window-layout-when-editing-org-code-blocks/after.gif]]
+
+Enjoy!
