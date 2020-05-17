@@ -13,18 +13,18 @@ In the image below we can see this behavior:
 #+NAME: fig:before-patch
 [[file:/images/avoid-losing-window-layout-when-editing-org-code-blocks/before.gif]]
 
-To solve this problem we can use a =register= to save the current window configuration just before the source code edition buffer is opened and when it's closed we can restore the previous configuration just getting the value from the =register= used before. We're defining two functions to accomplish this behavior, one to run before and one after we're done editing the source block.
+To solve this problem we can use a simple variable to store the current window configuration just before the source code edition buffer is opened and when it's closed we can restore the previous configuration just getting the value from the variable used before. We're defining two functions to accomplish this behavior, one to run before and one after we're done editing the source block.
 
 #+begin_src emacs-lisp
-(defconst my/org-edit-block-register ?o)
+(defvar my/org-src-block-tmp-window-configuration nil)
 
 (defun my/org-edit-special (&optional arg)
   "Save current window configuration before a org-edit buffer is open."
-  (set-register my/org-edit-block-register (current-window-configuration)))
+  (setq my/org-src-block-tmp-window-configuration (current-window-configuration)))
 
 (defun my/org-edit-src-exit ()
   "Restore the window configuration that was saved before org-edit-special was called."
-  (set-window-configuration (get-register my/org-edit-block-register)))
+  (set-window-configuration my/org-src-block-tmp-window-configuration))
 #+end_src
 
 Now we need to "attach" these two functions to the default behavior of org-mode, to do this we can use [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html][advice-add]] elisp function, this function allow us to "attach" some functionality to an existing function.
@@ -49,15 +49,15 @@ We need to execute this code after org is loaded so we use =eval-after-load=.
 The full code will be:
 
 #+begin_src emacs-lisp
-(defconst my/org-edit-block-register ?o)
+(defvar my/org-src-block-tmp-window-configuration nil)
 
 (defun my/org-edit-special (&optional arg)
   "Save current window configuration before a org-edit buffer is open."
-  (set-register my/org-edit-block-register (current-window-configuration)))
+  (setq my/org-src-block-tmp-window-configuration (current-window-configuration)))
 
 (defun my/org-edit-src-exit ()
   "Restore the window configuration that was saved before org-edit-special was called."
-  (set-window-configuration (get-register my/org-edit-block-register)))
+  (set-window-configuration my/org-src-block-tmp-window-configuration))
 
 (eval-after-load "org"
   `(progn
