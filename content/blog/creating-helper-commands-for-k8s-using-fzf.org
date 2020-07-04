@@ -68,4 +68,16 @@ function pod_logs {
 }
 #+end_src
 
+* Change context
+
+Switch between configured contexts
+
+#+begin_src shell
+function k8s_change_context {
+    local context=`kubectl config get-contexts --output='name' | fzf`
+    echo "Changing to $context"
+    kubectl config use-context $context
+}
+#+end_src
+
 These are some common tasks I need for a day of work but with the same logic we can build some other commands.
