@@ -24,6 +24,9 @@ pygmentsCodeFences = true
 
   colorscheme = "auto"
 
+[params.plausibleAnalytics]
+  domain = "erick.navarro.io"
+
 [[params.social]]
   name = "Twitter"
   icon = "fab fa-twitter fa-2x"
