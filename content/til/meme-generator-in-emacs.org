@@ -1,0 +1,60 @@
+---
+title: "Meme generator in emacs"
+date: 2020-10-03T22:27:26-05:00
+type: posts
+tags: [ emacs, elisp ]
+---
+
+=#TIL= it is possible to create memes in emacs using [[https://github.com/larsmagne/meme][meme]], this package allow to choose an image and add some text to it, we can also select any image and use it.
+
+* Installation
+
+This package, at the time of writing this, is not available on melpa so we have to install it manually or using [[https://github.com/raxod502/straight.el][straight.el]] or [[https://github.com/quelpa/quelpa][quelpa]], because I'm using =straight.el= for my config we'll use that.
+
+#+begin_src emacs-lisp
+(use-package imgur
+  :ensure t
+  :straight (imgur
+	     :type git
+	     :host github
+	     :repo "myuhe/imgur.el"))
+
+(use-package meme
+  :ensure t
+  :straight (meme
+	     :type git
+	     :host github
+	     :repo "larsmagne/meme"))
+#+end_src
+
+=meme= require =imgur= as a dependency so we need to install it before.
+
+=straight.el= compiles all the installed packages and load them from a different folder so we won't have the base images in the correct folder, we can copy them with:
+
+#+begin_src shell
+cp -r ~/.emacs.d/straight/repos/meme/images ~/.emacs.d/straight/build/meme
+#+end_src
+
+The meme generator is based on the SVG support that emacs provides, you can check is your emacs installation has it with:
+
+#+begin_src emacs-lisp
+(image-type-available-p 'svg)
+#+end_src
+
+If it returns =t= you're ready to go.
+
+* Usage
+
+Now we can run =M-x meme= and we can choose a base image:
+
+#+CAPTION: Pick meme
+#+NAME: fig:pick-meme
+[[file:/images/til/meme-generator-in-emacs/pick-meme.png]]
+
+And then we can and add some text to it, like the image below:
+
+#+CAPTION: Adding text
+#+NAME: fig:adding-text
+[[file:/images/til/meme-generator-in-emacs/edit-text.png]]
+
+Enjoy! 🎉
