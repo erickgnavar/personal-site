@@ -1,0 +1,244 @@
+---
+title: "Getting started with Tsung"
+date: 2020-10-03T09:01:38-05:00
+type: posts
+tags: [ testing, erlang, elixir ]
+---
+
+* What is tsung
+
+Tsung is a load testing tool written in erlang, it allow us to perform load testing for web applications, databases, etc. Or as its website says:
+
+#+begin_quote
+Tsung (formerly IDX-Tsunami) is a distributed load testing tool. It is protocol-independent and can currently be used to stress HTTP, WebDAV, SOAP, PostgreSQL, MySQL, AMQP, MQTT, LDAP and Jabber/XMPP servers.
+#+end_quote
+
+More info is available in its web page http://tsung.erlang-projects.org/user_manual/
+
+In this post we'll cover how to test a web application and at the time of writing this the available version of =tsung= is =1.7.0=.
+
+* Installation
+
+DISCLAIMER: All the steps described here are for macOS, there shouldn't be many differences for a linux system.
+
+=Tsung= is available on homebrew so we can install it using =brew install tsung=, also we'll need =perl= for charts generation so we can install it with =brew install perl= as well.
+
+In order to generate charts correctly we need to install a required dependency, we have to execute =cpan template= and we're almost ready to go
+
+A last step is change the perl script a little bit, in macOS is located in =/usr/local/lib/tsung/bin/tsung_stats.pl=. We first need to change its permissions so we can be able to edit it, we can execute =chmod 755 =/usr/local/lib/tsung/bin/tsung_stats.pl=. Now we can apply the following change:
+
+#+begin_src diff
+-#!/usr/bin/perl -w
++#!/usr/local/bin/perl -w
+#+end_src
+
+As you can see we changed the location of the =perl= installation, this was the easiest way I found to make it work properly without the need to make some other changes to perl installation.
+
+* Demo project
+
+We're going to use this [[https://github.com/erickgnavar/tsung_demo][example project]] for our tests. We can follow the instructions described in its =README.md= file.
+
+This project have the following urls:
+
+| route  | description                          | method | content type     |
+|--------+--------------------------------------+--------+------------------|
+| /      | index page with an html message      | GET    | text/html        |
+| /ping  | respond a pong message               | GET    | text/plain       |
+| /users | respond with a list of users in json | GET    | application/json |
+| /users | allow to create a new user           | POST   | application/json |
+
+We're going to write test for each of this routes.
+
+* Defining load tests
+
+Tsung load tests are defined in =xml=, in these =xml= files we can define the behaviour of the test, how many clients we want to execute, define the the endpoints to be used and so on.
+
+=tsung= comes with some examples included, in macOS we can find them in =/usr/share/doc/tsung/examples= and use them as a base for creating new tests.
+
+This a simplified version of the example =http_simple.xml= example included in the installation folder, let's create a file called =demo.xml= and put this content on it:
+
+#+begin_src xml
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/Cellar/tsung/1.7.0/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="notice" version="1.0">
+  <clients>
+    <client host="localhost" use_controller_vm="true"/>
+  </clients>
+
+  <servers>
+    <server host="localhost" port="4000" type="tcp"></server>
+  </servers>
+
+  <load>
+    <arrivalphase phase="1" duration="10" unit="minute">
+      <users arrivalrate="10" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="2" duration="5" unit="minute">
+      <users arrivalrate="20" unit="second"></users>
+    </arrivalphase>
+  </load>
+
+  <sessions>
+    <session name="http-example" probability="100" type="ts_http">
+      <request> <http url="/" method="GET" version="1.1"></http> </request>
+      <request> <http url="/ping" method="GET" version="1.1"></http> </request>
+      <request> <http url="/users" method="GET" version="1.1"></http> </request>
+      <request> <http url="/users" method="POST" contents_from_file="payload.json" content_type="application/json" version="1.1"></http> </request>
+    </session>
+  </sessions>
+</tsung>
+#+end_src
+
+Note that the second line is pointed to a path inside the tsung installation folder, this can be changed, the =tsung-1.0.dtd= is available in its web page http://tsung.erlang-projects.org/user_manual/dtd.html.
+
+#+begin_src xml
+<!DOCTYPE tsung SYSTEM "/usr/local/Cellar/tsung/1.7.0/share/tsung/tsung-1.0.dtd">
+#+end_src
+
+Let's explain a little bit about the test sections:
+
+** Client setup
+
+Tsung is a distributed testing tool so we can execute the client in different hosts, for now we'll be executing the client in our machine so we can define the client in =localhost=:
+
+#+begin_src xml
+<clients>
+  <client host="localhost" use_controller_vm="true"/>
+</clients>
+#+end_src
+
+** Server setup
+
+This is the server who will be serving the incoming requests from =tsung=, in this case is the same machine and listening at port =4000= using a =TCP= connection, in a proper test it should a separate machine.
+
+#+begin_src xml
+<servers>
+  <server host="localhost" port="4000" type="tcp"></server>
+</servers>
+#+end_src
+
+** Load behaviour
+
+We can define how the test load will behave, in this case we're configuring =tsung= to have 2 phases:
+
+1. The first phase will run for 10 minutes and create 10 users every second.
+2. The second phase will run for 5 minutes and create 20 users every second.
+
+#+begin_src xml
+<load>
+  <arrivalphase phase="1" duration="10" unit="minute">
+    <users arrivalrate="10" unit="second"></users>
+  </arrivalphase>
+
+  <arrivalphase phase="2" duration="10" unit="minute">
+    <users arrivalrate="20" unit="second"></users>
+  </arrivalphase>
+</load>
+#+end_src
+
+For more info about the load configuration we can check http://tsung.erlang-projects.org/user_manual/conf-load.html
+
+** HTTP requests
+
+Now we can define what endpoints we're going to test, we can define the url, method used and some other properties that can be found in http://tsung.erlang-projects.org/user_manual/conf-sessions.html#http.
+
+In this case we're defining the 4 routes from our example project:
+
+#+begin_src xml
+<sessions>
+  <session name="http-example" probability="100" type="ts_http">
+    <request> <http url="/" method="GET" version="1.1"></http> </request>
+    <request> <http url="/ping" method="GET" version="1.1"></http> </request>
+    <request> <http url="/users" method="GET" version="1.1"></http> </request>
+    <request> <http url="/users" method="POST" contents_from_file="payload.json" content_type="application/json" version="1.1"></http> </request>
+  </session>
+</sessions>
+#+end_src
+
+Note that in the case of the =POST= request we're defining a =contents_from_file= property, this allow us to load the body of the request from an external file, we can define it in the same test but it's easier to have a separate file, the content of the =payload.json= if the following:
+
+#+begin_src json
+{
+  "name": "tsung",
+  "email": "demo@demo.com"
+}
+#+end_src
+
+This file needs to be in the same folder as =demo.xml=
+
+* Running the load tests
+
+Now we have all the pieces on place so we can execute our tests, we should be in the folder where we create our =demo.xml= and run the following command:
+
+#+begin_src shell
+tsung -f demo.xml start
+#+end_src
+
+That should returns something like this:
+
+#+begin_src shell
+Starting Tsung
+Log directory is: /Users/erick/.tsung/log/20201004-1229
+#+end_src
+
+For each execution =tsung= create a folder under =~/.tsung/log/= where all the data generated by the tests will be saved, =tsung= also has a embedded web server where we can see the results of the tests, by default it will run on http://localhost:8091/
+
+* Reporting
+
+We can see live reporting in the service running at http://localhost:8091/ or we can see more detailed data using the =tsung_stats.pl= script.
+
+** Dynamic reporting
+
+When we enter to http://localhost:8091/ we can see:
+
+- A status page
+- A report page which shows stats about the load testing
+- A charts page
+- A logs page which shows all the generated log files
+
+*** Status page
+
+We can see the status of the running tests:
+
+[[file:/images/blog/getting-started-with-tsung/status-page.png]]
+
+*** Reports page
+
+We can see stats about the connection time, response times, OS resources usage and so on.
+
+[[file:/images/blog/getting-started-with-tsung/reports-page.png]]
+
+*** Charts page
+
+This could be the most interesting one, we can see pretty good charts about the behave of the service that we're testing, it has the following sections:
+
+- Response time
+- Throughput
+- Simultaneous users
+- Server OS monitoring
+- HTTP return code Status (rate)
+
+[[file:/images/blog/getting-started-with-tsung/charts-page.png]]
+
+** Static reporting
+
+Once we finish the tests we can go into the log folder, =~.tsung/log/20201004-1229= in this case, and generate more detailed charts, see CSVs with all the resulted data and more.
+
+To generate the chart we have to run the following command inside our log folder
+
+#+begin_src shell
+/usr/local/lib/tsung/bin/tsung_stats.pl
+#+end_src
+
+This will generate a few new folders inside of it:
+
+- =csv_data=: a list of =CSV= files with all the data to be processed in some external tool like =R= or a =jupyter notebook= for example
+- =images=: a set of more detailed charts
+
+For example in this chart we can see the numbers of users vs the time, and as we can see the quantity was increased after 10 minutes, just like we defined in the config file.
+
+[[file:/images/blog/getting-started-with-tsung/users-arrival-chart.png]]
+
+* Final thoughts
+
+=tsung= can be used to test not only http services, it supports sql databases, websocket protocol and many more protocols, so we can use it to perform load test for many parts of our application and because it is based on plain texts configuration files we can version them to keep track of the tests we perform along the time.
