@@ -1,11 +1,11 @@
 ---
-title: "Contributing to a project"
+title: "Things to keep in mind when contributing to a software project"
 date: 2020-07-21T12:58:17-05:00
 type: posts
 tags: [ git, code-review ]
 ---
 
-These are some are thoughts to keep in mind when we're contributing to a project.
+These are some are thoughts to keep in mind when we're contributing to a software project.
 
 * Know your tools
 
