@@ -1,0 +1,51 @@
+---
+title: "Find file under cursor in emacs"
+date: 2021-02-27T11:08:20-06:00
+type: posts
+tags: [ emacs, elisp, vim ]
+---
+
+=#TIL= you can use =gf= to open a file under the current cursor position in VIM, I was reading this [[https://thevaluable.dev/vim-advanced/][post]] I found in Hacker News and I was wondering if =evil-mode= has this functionality as well
+
+=evil-mode= has this key binding defined and it uses =(find-file-at-point)=, it works well for absolute paths but not for relative paths and I wanted to use it for a path like this =templates/home.html= so I wrote some =elisp= code to be able to make what I want:
+
+#+begin_src emacs-lisp
+(defun my/find-file-under-cursor ()
+  "Check it the filepath under cursor is an absolute path otherwise open helm and insert the filepath."
+  (interactive)
+  (let ((file-path (thing-at-point 'filename t)))
+    (if (file-name-absolute-p file-path)
+	(find-file-at-point file-path)
+      (setq my/text-to-be-inserted-in-minibuffer file-path)
+      (helm-ls-git-ls))))
+#+end_src
+
+If the path under the cursor is an absolute path it will use the regular =find-file-at-point= function, otherwise it will open =helm-ls-git-ls= and insert that value into the minibuffer. I use the variable =text-to-be-inserted-in-minibuffer= as a "hack" to be able to insert something after helm is opened.
+
+The following code does the magic:
+
+#+begin_src emacs-lisp
+(defvar my/text-to-be-inserted-in-minibuffer nil)
+
+(defun my/insert-text-to-minibuffer ()
+  "Insert the text from `my/text-to-be-inserted-in-minibuffer' into the minibuffer after it opened."
+  (when my/text-to-be-inserted-in-minibuffer
+    (insert my/text-to-be-inserted-in-minibuffer)
+    (setq my/text-to-be-inserted-in-minibuffer nil)))
+
+(add-hook 'minibuffer-setup-hook 'my/insert-text-to-minibuffer)
+#+end_src
+
+This basically check if =my/text-to-be-inserted-in-minibuffer= has a value different than =nil= and then insert it after =minibuffer-setup-hook= is triggered.
+
+With all of this done we just need to replace the regular behaviour of =gf= with our custom function:
+
+#+begin_src emacs-lisp
+(define-key evil-normal-state-map "gf" 'my/find-file-under-cursor)
+#+end_src
+
+Demo
+
+[[file:/images/til/find-file-under-cursor-in-emacs/demo.gif]]
+
+And that's it. Enjoy! 🎉
