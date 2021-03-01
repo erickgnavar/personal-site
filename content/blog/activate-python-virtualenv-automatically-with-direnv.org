@@ -1,0 +1,26 @@
+---
+title: "Activate python virtualenv automatically with direnv"
+date: 2021-02-28T23:06:47-06:00
+type: posts
+tags: [ python, terminal, direnv ]
+---
+
+[[https://direnv.net][direnv]] is a tool to set up automatically environment variables as soon as we enter in a directory that contains a =.envrc= file. We can use this feature to activate our virtualenvs as well.
+
+Let's see what happens when we activate manually a virtualenv with =source ./env/bin/activate=:
+
+- A new new environment variable called =VIRTUAL_ENV= is exported.
+- The path is updated to include the =bin= directory inside our =virtualenv= this is made to allow us to point to the correct python installation and run cli interfaces exposed by the dependencies we have installed.
+
+Because all the "magic" about activating a =virtualenv= is basically configuring some environment variables we can do it automatically using =direnv=.
+
+Let's assume we have a =virtualenv= installed in the path =/Users/erick/.virtualenvs/demo=, the =virtualenv= is located inside =~/.environments= because I'm using =virtualenvwrapper= but it can be in any other location. Now we can use this location to configure our =.envrc= file as the following:
+
+#+begin_src shell
+export VIRTUAL_ENV=/Users/erick/.virtualenvs/demo
+export PATH=/Users/erick/.virtualenvs/demo/bin:$PATH
+#+end_src
+
+Now when we enter our project folder the virtualenv will be "activated" automatically and when we leave the project folder it will be "deactivated".
+
+Also when we use this method is easiest for our editor(emacs in my case) to recognize the current python installation and be able to run tests, execute files, etc.
