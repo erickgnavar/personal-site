@@ -1,0 +1,197 @@
+---
+title: "Things I wish I knew when I started in elixir development"
+date: 2021-03-01T08:54:15-06:00
+tags: [ "elixir", "erlang" ]
+type: posts
+---
+
+These are some things I commonly use in my elixir development workflow that might be interesting for someone.
+
+* Managing multiple versions of elixir and erlang
+
+When you have to work in more than one project at time that could probably means you have to handle different elixir and erlang versions so installing the default version that your OS provides won't be helpful. Here is where =asdf= shines to solves this problem, =asdf= allow us to have different versions of elixir, erlang and other languages in the same machine so we can easily switch between them.
+
+In macOS you can install it with =brew install asdf= and then follow the instructions that the installer prints out to set up the =PATH=, more info in its Github page https://github.com/asdf-vm/asdf
+
+Now we have =asdf= installed we need to install the plugins to handle =erlang= and =elixir=, we can install them with:
+
+#+begin_src shell
+asdf plugin add erlang
+asdf plugin add elixir
+#+end_src
+
+Once we have those installed we need to define which versions we're going to use in our project, there is more than one way to do that:
+
+** Using environment variables
+
+We can set up the required versions by defining environment variables with the =ASDF_= prefix so if we need version elixir =1.10= we need to define the variable =ASDF_ELIXIR_VERSION= with the value =1.10= the same applies for erlang or other programming languages as well.
+
+For example we can define variables for elixir and erlang as the example below:
+
+#+begin_src shell
+export ASDF_ELIXIR_VERSION=1.10.3-otp-22
+export ASDF_ERLANG_VERSION=22.3
+#+end_src
+
+#+begin_quote
+To handle environment variables in a easy way we can use [[https://direnv.net][direnv]], it allows to define environment variables in a file =.envrc= and it will loaded automatically as soon as we enter to out project folder.
+#+end_quote
+
+** File based config file
+
+=asdf= allow us to define a =.tool-versions= file where we can put all the versions needed for our project, we can define one as the example below:
+
+#+begin_src shell
+erlang 23.0.2
+elixir 1.10.4-otp-23
+#+end_src
+
+** Creating a new project
+
+Because we have first to define the versions used in a project we can't just run =mix new my_app= because =asdf= doesn't know yet which versions we want. To do this we have 2 options:
+
+- Define global versions of elixir and erlang using for example =asdf global elixir 1.9.0= and the same for erlang =asdf global erlang 22.3= and then we can execute =mix new my_app= normally
+- Define the versions just for the =mix new= command execution, for example =ASDF_ELIXIR_VERSION=1.9.0 ASDF_ERLANG_VERSION=22.3 mix new my_app=, this way we don't affect the global scope and then we can define these same versions inside the created project.
+
+I like the second one because I don't have to change the global version each time I want to create a new project and I can easily access to that command from bash history.
+
+** Notes about erlang compilation
+
+=asdf= uses =kerl= under the hood to handle erlang compilation and when we are installing a new version it will ask for a java installation 😕, to avoid this behaviour we can define the following environment variable:
+
+#+begin_src shell
+export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
+#+end_src
+
+* Ecto database url
+
+If we are dealing with databases in our project we will probably be using Ecto. And Ecto allow us to define database credentials in two ways, the first one is define them separately as the example below:
+
+#+begin_src elixir
+config :my_app, Repo,
+  database: "ecto_simple",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
+#+end_src
+
+And the second one is using a unique parameter:
+
+#+begin_src elixir
+config :my_app, Repo,
+  url: "postgres://postgres:postgres@localhost/ecto_simple"
+#+end_src
+
+This is my favorite option for these reasons:
+
+- Just one value to maintain
+- This format is also accepted in =psql=, for example we can execute =psql postgres://postgres:postgres@localhost/ecto_simple= and we're connected to the database. I just discovered this a few weeks ago 😅
+- We can change credentials for example when we're running a mix command just prepending the value =DATABASE_URL=postgres://postgres:postgres@localhost/test_db mix something= in the case we're loading it from an environment variable
+
+Then if you have the connection url in a variable called =DATABASE_URL=, using =direnv= of course 😉, you can just execute =psql $DATABASE_URL= to database session.
+
+* Using iex
+
+** Enable shell history
+
+A cool feature of elixir is =iex=, you can load modules, recompile them and so on, but when sometimes we execute "large" pieces of code or some cases that we're trying out to understand the code or something else and when we have to restart the session we lost all the history 😢, we can avoid this by adding a flag =-kernel shell_history enabled= in the environment variable =ERL_AFLAGS= before we start our =iex= session. I just put following code in my =.zshrc= to have it enabled for all my projects:
+
+#+begin_src shell
+export ERL_AFLAGS="-kernel shell_history enabled"
+#+end_src
+
+** Preload aliases
+
+Another thing than could be annoying to deal with is aliasing a large module name, for example if we have =MyApp.Contexts.Authentication.User= and we are using this module pretty often it could be easier to have it already loaded when we start a iex session, we can make this by defining a =.iex.exs= file in the project root with the desired aliases, for example:
+
+#+begin_src elixir
+alias MyApp.Contexts.Authentication.User
+#+end_src
+
+And now when we start a new =iex= session we will have that module aliased from the beginning so we can use =User.whatever= without a problem.
+
+#+begin_quote
+Keep in mind that even if we can make an alias(a module name is just an atom) when we starting a session using just =iex= we cannot access to its functions. We need to start our =iex= session using =iex -S mix=
+#+end_quote
+
+** Recompiling modules
+
+Within a =iex= sessions we can recompile a module just writing =r module_name= and if the want to recompile the whole project we can execute =recompile=, this is useful when we are making some changes in the code and we need to test it right away with all the values that we already had defined. It's also called "REPL based development" and it's most used with lisp based programming languages but having =iex= in elixir we can use those nice features as well.
+
+* Mix tasks
+
+These are tasks that =mix= can run, duhh.. But we can create them and use them in our projects. For example maybe we are debugging some code and we don't want to execute a long process(business process) instead of that we can just extract some function calls and execute them from a mix task using existing data. We can create a mix task with the following code:
+
+#+begin_src elixir
+defmodule Mix.Tasks.Foo do
+  @moduledoc false
+  use Mix.Task
+
+  def run(_args) do
+    Application.ensure_all_started(:my_app)
+    IO.puts("runnning...")
+  end
+end
+#+end_src
+
+We have to name this file =foo.ex= and place it inside =lib= folder and now we can run =mix foo= and we'll get a =running...= message.
+
+I use this many times, actually I have some defined tasks in many projects than I reuse to debug some workflows.
+
+#+begin_quote
+I know that we "should" be defining the cases that we are debugging in a test, run it and then try to fix the code and then run the tests again but this way works for me so I'm OK with that 🙃
+#+end_quote
+
+* Working with local third party libraries
+
+In some cases we could found some weird behaviour, a bug of just want to know a little more deep about how a third party library works. In that case it could be difficult to setup a local version of a library that we use in our project.
+
+I remember using just =pip install -e path_to_library= in python and just starting to changing the library code.
+
+In elixir when we want to install a local version of a library we can specify the path of it in the =mix.exs= file, for example:
+
+#+begin_src elixir
+defmodule MyApp.MixProject do
+  use Mix.Project
+
+  def project() do
+    [
+      app: :my_app,
+      version: "0.0.1",
+      elixir: "~> 1.0",
+      deps: deps(),
+    ]
+  end
+
+  def application() do
+    []
+  end
+
+  defp deps() do
+    [
+      {:ecto, "~> 2.0"},
+      {:postgrex, "~> 0.8.1"},
+      {:ecto_sql, path: "ecto_sql_local_path"}
+    ]
+  end
+end
+#+end_src
+
+In this case we're telling our project to install =ecto_sql= from the given =path=, this will work but just the first time because it will load and compile =ecto_sql= at the beginning and then when we're making some changes in the code placed in =ecto_sql_local_path= these changes won't be recompiled automatically because =mix= is only watching for changes inside our project. In this case we can force to recompile some modules by using for example =r Ecto.Migrator= from within an =iex= session but if we are modifying more modules it would be tedious to recompile manually every one of them, for this case we can define a =Recompiler= module that make this work for us, name it as you want, this will contains:
+
+#+begin_src elixir
+defmodule Recompiler do
+  def run do
+    modules_to_recompile = [
+      Ecto.Migrator,
+      Ecto.SomeOtherModule
+    ]
+
+    for module <- modules_to_recompile do
+      IEx.Helpers.r(module)
+    end
+  end
+end
+#+end_src
+
+We can place this module somewhere inside our =lib= folder and when we call =Recompiler.run= from within a =iex= session it will recompile all the defined modules.
