@@ -16,27 +16,12 @@ tags: [ emacs, elisp, vim ]
   (let ((file-path (thing-at-point 'filename t)))
     (if (file-name-absolute-p file-path)
 	(find-file-at-point file-path)
-      (setq my/text-to-be-inserted-in-minibuffer file-path)
-      (helm-ls-git-ls))))
+      (minibuffer-with-setup-hook (lambda ()
+				    (insert file-path))
+	(helm-ls-git-ls)))))
 #+end_src
 
-If the path under the cursor is an absolute path it will use the regular =find-file-at-point= function, otherwise it will open =helm-ls-git-ls= and insert that value into the minibuffer. I use the variable =text-to-be-inserted-in-minibuffer= as a "hack" to be able to insert something after helm is opened.
-
-The following code does the magic:
-
-#+begin_src emacs-lisp
-(defvar my/text-to-be-inserted-in-minibuffer nil)
-
-(defun my/insert-text-to-minibuffer ()
-  "Insert the text from `my/text-to-be-inserted-in-minibuffer' into the minibuffer after it opened."
-  (when my/text-to-be-inserted-in-minibuffer
-    (insert my/text-to-be-inserted-in-minibuffer)
-    (setq my/text-to-be-inserted-in-minibuffer nil)))
-
-(add-hook 'minibuffer-setup-hook 'my/insert-text-to-minibuffer)
-#+end_src
-
-This basically check if =my/text-to-be-inserted-in-minibuffer= has a value different than =nil= and then insert it after =minibuffer-setup-hook= is triggered.
+If the path under the cursor is an absolute path it will use the regular =find-file-at-point= function, otherwise it will open =helm-ls-git-ls= and insert that value into the minibuffer. I use =minibuffer-with-setup-hook= to setup a temporal function attached to =minibuffer-setup-hook= to be able to insert the file path in the minibuffer after =helm-ls-git-ls= is opened.
 
 With all of this done we just need to replace the regular behaviour of =gf= with our custom function:
 
