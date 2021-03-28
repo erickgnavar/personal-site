@@ -27,6 +27,10 @@ pygmentsCodeFences = true
 [params.plausibleAnalytics]
   domain = "erick.navarro.io"
 
+[params.buyMeACoffee]
+  username = "erickgnavar"
+  color = "#DDD"
+
 [[params.social]]
   name = "Twitter"
   icon = "fab fa-twitter fa-2x"
