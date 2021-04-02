@@ -95,6 +95,22 @@ But it can be attached to any key binding, for example:
 (global-set-key (kbd "C-c C-r") 'recompile)
 #+end_src
 
+** Bonus: run parrot mode animation when a compilation is successful
+
+I configured [[https://github.com/dp12/parrot][parrot-mode]] to animate the little parrot every time the compilation process is a success, to make this we need a small function that check if it was a success and then we need to attach it to ='compilation-finish-functions=, this is a variable defined in =compilation-mode=.
+
+#+begin_src emacs-lisp
+(defun my/parrot-animate-when-compile-success (buffer result)
+  (if (string-match "^finished" result)
+      (parrot-start-animation)))
+
+(use-package parrot
+  :ensure t
+  :config
+  (parrot-mode)
+  (add-to-list 'compilation-finish-functions 'my/parrot-animate-when-compile-success))
+#+end_src
+
 * Conclusion
 
 As we can see =compilation-mode= is a simple but powerful mode that allow us to build our own tools, we can create an automatic build system in case there is not something already existing for the technology we're using or if we just want to run some tasks in an easier way.
