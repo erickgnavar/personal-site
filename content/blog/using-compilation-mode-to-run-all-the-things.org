@@ -1,0 +1,100 @@
+---
+title: "Using compilation mode to run all the things"
+date: 2021-04-01T10:44:22-06:00
+type: posts
+tags: [ "emacs", "emacs lisp" ]
+---
+
+Compilation mode is a major mode that allow us to run a command and see its output result in a special buffer, this resulting buffer show the errors and allow us to navigate through them, you can check the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Compilation-Mode.html][documentation]] for more details.
+
+It's a "simple mode" but it can be used for many things like compile and run a program, run tests, and so on.
+
+* Usage
+
+** Interactive
+
+=compile= is an interactive function so we can call it with =M-x compile= and enter the command we want to execute.
+
+In the following example we're compiling this blog using hugo binary:
+
+[[file:/images/blog/using-compilation-mode-to-run-all-the-things/run-mx-compile.gif]]
+
+** From code
+
+=compile= is a emacs-lisp function so we call it from our code, we just need to take care about the =default-directory= when we call it, for example if we call it from =lib/hello.ex= buffer, =default-directory= will be =lib= and in some cases we want to use our project root, or a different directory, to run our command.
+
+To fix this we need to setup =default-directory= before we call =compile=, for example let's build a custom function to run =hlint= in our entire project and then show its results in a =compilation= buffer:
+
+#+begin_src emacs-lisp
+(defun my/run-hlint ()
+  "Run  hlint over the current project."
+  (interactive)
+  (let ((default-directory (projectile-project-root)))
+    (compile "hlint .")))
+#+end_src
+
+In this case we're setting up =default-directory= with our project root (using projectile to get the root) and then when we call =compile= it will take =default-directory= correctly.
+
+* Some tweaks
+
+These modifications to default behaviour of =compilation-mode= should be made after the mode was loaded so we need to use [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Hooks-for-Loading.html][with-eval-after-load]] otherwise these changes won't be applied correctly.
+
+** Evil-mode
+
+The =compilation= buffer has some preset key bindings that conflict with =evil-mode=, for example when we press =g= in a compilation buffer this will re-run the command, but this key binding is also used by =evil-mode=, to fix this we can disable the default key binding with:
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'compile
+  (define-key compilation-mode-map (kbd "g") nil)
+  (define-key compilation-mode-map (kbd "r") 'recompile)
+  (define-key compilation-mode-map (kbd "h") nil))
+#+end_src
+
+In this case =h= key binding is also disabled (also used by evil) and =r= is remapped to =recompile= for easy access now that we disabled =g= default key binding.
+
+
+** Follow compilation output
+
+By default =compilation-mode= doesn't follow the output of the command so if our command result has a large output we'll need to scroll manually, to fix this we can change =compilation-scroll-output= to =t=
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'compile
+  ;; set cursor to follow compilation output
+  (setq compilation-scroll-output t))
+#+end_src
+
+** Enable ANSI colors
+
+Some tools show results with colors for easy reading but =compilation-mode= won't show them by default, you can make them look better with:
+
+#+begin_src emacs-lisp
+(require 'ansi-color)
+
+(defun colorize-compilation-buffer ()
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+#+end_src
+
+This was taken from this [[https://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer/3072831#3072831][Stack Overflow answer]]
+
+** Re run compilation from another buffer
+
+When we're making changes in our code we want to re-run our compilation process right after we save the changes but to do this we have to move to the compilation buffer to be able to re-run the compilation, a better approach to do this could be just call =recompile= by using a key binding, I use =evil-leader= to make this:
+
+#+begin_src emacs-lisp
+(evil-leader/set-key "R" 'recompile)
+#+end_src
+
+[[file:/images/blog/using-compilation-mode-to-run-all-the-things/run-recompile.gif]]
+
+But it can be attached to any key binding, for example:
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c C-r") 'recompile)
+#+end_src
+
+* Conclusion
+
+As we can see =compilation-mode= is a simple but powerful mode that allow us to build our own tools, we can create an automatic build system in case there is not something already existing for the technology we're using or if we just want to run some tasks in an easier way.
