@@ -1,7 +1,7 @@
 ---
 title: "Save and Restore Window Configuration in Emacs"
 date: 2018-12-25T10:18:56-05:00
-tags: [ emacs, elisp ]
+tags: [ emacs, emacs lisp ]
 type: posts
 ---
 

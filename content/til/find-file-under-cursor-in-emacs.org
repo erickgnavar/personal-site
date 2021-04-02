@@ -2,7 +2,7 @@
 title: "Find file under cursor in emacs"
 date: 2021-02-27T11:08:20-06:00
 type: posts
-tags: [ emacs, elisp, vim ]
+tags: [ emacs, emacs lisp, vim ]
 ---
 
 =#TIL= you can use =gf= to open a file under the current cursor position in VIM, I was reading this [[https://thevaluable.dev/vim-advanced/][post]] I found in Hacker News and I was wondering if =evil-mode= has this functionality as well

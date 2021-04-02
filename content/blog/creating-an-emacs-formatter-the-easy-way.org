@@ -1,7 +1,7 @@
 ---
 title: "Creating an emacs formatter the easy way"
 date: 2019-05-20T19:44:35-07:00
-tags: [ emacs, elisp ]
+tags: [ emacs, emacs lisp ]
 type: posts
 ---
 
