@@ -1,0 +1,240 @@
+---
+title: "Easy deploy of docker based projects"
+date: 2021-04-02T21:57:24-06:00
+type: posts
+tags: [ docker, django, caddy, deployment, phoenix ]
+---
+
+I have a personal server where I run some projects, some of them written in python, elixir and other technologies so having to deal with specific installation of any of these technologies is not an ideal workflow, to fix this I use docker and all of them are deployed using =docker-compose=, they're connected to a single PostgreSQL server and they're behind the same web server.
+
+Running all of these projects in this way it's easier to maintain and in case something happens with the server I can re deploy everything in a easy way. Let's take a look to these tools and how they work together.
+
+Let's assume we have the following requirements:
+
+- Deploy a [[https://github.com/erickgnavar/demo-projects/tree/master/simple-django-project-with-docker][django application]]
+- Deploy a [[https://github.com/erickgnavar/demo-projects/tree/master/simple-phoenix-project-with-docker][phoenix application]]
+- Each application needs a PostgreSQL database
+- Both applications should be behind a web server and being accessed over HTTPS
+- All of these should run in the same server
+
+To solve this we're going to:
+
+- Set up a linux server
+- Install PostgreSQL
+- Configure a web server which will handle incoming traffic and SSL termination
+- Run our applications inside Docker containers
+
+* Setting up a server
+
+If you already have a server you can skip this section.
+
+We first need a server which can run docker, most linux distros can be used for this but in this case we'll be using Ubuntu Server, if you don't have a server yet you can use any of these referral links to get some credit when you create your account:
+
+- [[https://m.do.co/c/330e2b815378][Digital Ocean]] this will get you $100 on credits to be used in 2 months
+- [[https://hetzner.cloud/?ref=om6r8Z9OZrQq][Hetzner]] this will get you 20€ on credits, this provider has cheaper prices than Digital Ocean but it only have data centers in Europe
+- [[https://www.linode.com/lp/brand-free-credit-short/][Linode]] This is not a referral link but you can get $100 on credits, AFAIK it doesn't expire
+
+Once you get a server it's recommended to make some basic configurations like updating packages, setup a firewall, etc. You can follow this Linode [[https://www.linode.com/docs/security/securing-your-server/][guide]] to secure your server.
+
+After that you need to install docker, to do that you can follow the [[https://docs.docker.com/engine/install/][official documentation]], this have specific instructions for you linux distribution.
+
+Once we have =docker= and =docker-compose= installed we can follow this guide.
+
+* Installing PostgreSQL in our host machine
+
+We're going to use a unique instance of PostgreSQL installed in the host machine, this way we can share the resources used by PostgreSQL with all the applications that we're going to deploy, we just need to create new users and databases for each one of the applications.
+
+First let's install PostgreSQL with:
+
+#+begin_src shell
+sudo apt install postgresql-server
+#+end_src
+
+We need to login with =postgres= user so we can be able to enter to a =psql= session. We can do it with:
+
+#+begin_src shell
+sudo su - postgres
+#+end_src
+
+Now we can open a =psql= session and create the databases and users for our applications:
+
+#+begin_src sql
+postgres=# CREATE USER django WITH ENCRYPTED PASSWORD 'secret';
+
+postgres=# CREATE DATABASE django WITH OWNER django;
+#+end_src
+
+And we do the same for our phoenix application:
+
+#+begin_src sql
+postgres=# CREATE USER phoenix WITH ENCRYPTED PASSWORD 'secret';
+
+postgres=# CREATE DATABASE phoenix WITH OWNER phoenix;
+#+end_src
+
+* Configuring Caddy as a reverse proxy
+
+[[https://caddyserver.com][Caddy]] is a "new" web server written in Go that have 2 main features that make it a good option for simpler deployments:
+
+- Simpler configuration file
+- Free auto configured SSL certificates, using Let's Encrypt service, and automatic renewals
+
+If we were using for example Nginx we have to deal with HTTPS certificates by ourselves, installing [[https://certbot.eff.org][certbot]], and also have to configure some way to renew the certificates, Let's Encrypt issues certificates that expire after 3 months.
+
+Let's define our domains =django.domain.com= and =phoenix.domain.com= which will send traffic to their specific applications.
+
+Our django application needs that Caddy serves the static files so we define =file_server= option and tell caddy where are our static files, we also tell Caddy to send the traffic to port =8000= where our application is listening.
+
+#+begin_src caddy
+django.domain.com {
+    root * /opt/django
+
+    @notStatic {
+        not path /static/*
+    }
+
+    reverse_proxy @notStatic localhost:8000
+    file_server
+}
+#+end_src
+
+Our phoenix application will serve static files by itself so we just need to define the =reverse_proxy= directive to be able to send the traffic to port =4000=
+
+#+begin_src caddy
+phoenix.domain.com {
+    reverse_proxy localhost:4000
+}
+#+end_src
+
+Now when we reload our caddy server with =sudo systemctl reload caddy= it will get the SSL certificates and internally will check if they still valid, otherwise it will renew them.
+
+* Running our projects with docker-compose
+
+[[https://docs.docker.com/compose/][Docker compose]] is a tool that allow us to define different docker services in a easier way using a =yaml= file.
+
+We're going to configure our two projects using =docker-compose= but we first need their docker images so let's build them.
+
+Let's clone our projects(both are in the same repository, just in different folders), build the images and then publish them on a registry.
+
+This can be made in a separate machine because once the images are pushed to a remote registry they can be downloaded in our server.
+
+#+begin_src shell
+cd simple-django-project-with-docker
+docker build -t registry.mycompany.com/django:v1 .
+docker push registry.mycompany.com/django:v1
+#+end_src
+
+#+begin_src shell
+cd simple-phoenix-project-with-docker
+docker build -t registry.mycompany.com/phoenix:v1 .
+docker push registry.mycompany.com/phoenix:v1
+#+end_src
+
+You can use docker hub to push your images or use Gitlab registry in case you want free private images.
+
+** Django application
+
+Let's create a folder in =/opt/django= and put the following code into a =docker-compose.yml= file.
+
+#+begin_src yaml
+version: "2"
+services:
+  web:
+    image: registry.mycompany.com/django:v1
+    restart: always
+    network_mode: host
+    environment:
+      ALLOWED_HOSTS: "django.domain.com"
+      DEBUG: "0"
+      DATABASE_URL: "postgres://django:secret@localhost:5432/django"
+      DJANGO_SETTINGS_MODULE: "config.settings"
+      SECRET_KEY: "a 32 long secret key"
+    volumes:
+      - ./static:/app/static
+    ports:
+      - "127.0.0.1:8000:8000"
+#+end_src
+
+The =static= folder will be used by Caddy to server static files.
+
+** Phoenix application
+
+Now for our phoenix application let's create a folder =/opt/phoenix= and put the following code into a =docker-compose.yml= file.
+
+#+begin_src yaml
+version: "2"
+services:
+  web:
+    image: registry.mycompany.com/phoenix:v1
+    restart: always
+    network_mode: host
+    environment:
+      DATABASE_URL: "postgres://phoenix:secret@localhost:5432/phoenix"
+      MIX_ENV: prod
+      HOST: "phoenix.domain.com"
+      SECRET_KEY_BASE: "a 32 long secret key"
+    ports:
+      - "127.0.0.1:4000:4000"
+#+end_src
+
+Because we're running PostgreSQL in our host machine instead of a docker container we have to use =network_mode: host=, this allow us to access postgres just pointing to =localhost=.
+
+** Deploying our projects
+
+Once we have the =docker-compose.yml= files configured we can go inside each project folder and run:
+
+#+begin_src shell
+docker-compose up -d
+#+end_src
+
+For the django application we also have to run these commands, these are specific of django deployment process.
+
+#+begin_src shell
+# Run database migrations
+docker-compose exec -T web python manage.py migrate
+
+# Collect all static files and place them in our STATIC_ROOT folder which will be served by Caddy
+docker-compose exec -T web python manage.py collectstatic --no-input
+#+end_src
+
+* Deploying new changes
+
+Because we're using docker, when we need to update changes we just need to update their Docker images and restart their services. Some technologies can have differences in their deployment process but the basic idea is the same.
+
+Let's see how it could be for our two example applications.
+
+** Django application
+
+When we update a django application we need to run some extra commands like =migrate=, =collectstatic=, etc. We can follow these steps to run them inside the docker container:
+
+#+begin_src shell
+docker pull NEW_DJANGO_IMAGE
+
+sed -i "s/image.*/image:\ NEW_DJANGO_IMAGE/" docker-compose.yml
+
+docker-compose up -d --force-recreate
+
+docker-compose exec -T web python manage.py migrate
+
+docker-compose exec -T web python manage.py collectstatic --no-input
+#+end_src
+
+We're pulling the new image from our registry, updating the image value in our =docker-compose.yml= file, restart the service (it will use the new image now) and then we can execute =migrate= and =collectstatic= commands
+
+** Phoenix application
+
+For the phoenix application we're going to follow almost the same process with just one difference, we don't need to run migrations in a separate step because they will run when the application starts, this is defined in the phoenix docker image itself.
+
+So we just need to pull the new image, update it in =docker-compose.yml= file and then restart the service, the final script will be:
+
+#+begin_src shell
+docker pull NEW_PHOENIX_IMAGE
+
+sed -i "s/image.*/image:\ NEW_PHOENIX_IMAGE/" docker-compose.yml
+
+docker-compose up -d --force-recreate
+#+end_src
+
+* Conclusion
+
+Having a central PostgreSQL instance and a central web server(Caddy), both in the host machine instead of inside a container allow us to manage them easily and also allow us to share these common services alongside the many applications that we are running in our server.
