@@ -4,6 +4,7 @@ title = "(ノ°Д°）ノ︵ ┻━┻"
 theme = "hugo-coder"
 markup = "org"
 pygmentsCodeFences = true
+paginate = 20
 
 [params]
   rss = true
