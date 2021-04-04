@@ -1,0 +1,163 @@
+---
+title: "Auto build and publish emacs org configuration as a website"
+date: 2021-04-04T10:32:08-06:00
+type: posts
+tags: [ emacs, "org-mode", "github-actions", "github-pages" ]
+---
+
+Having our emacs configuration in an =org= file is great, it allow us to have it more organized and easy to read, but =org= files have more features and one of them is the ability to be exported to different formats like HTML, PDF, markdown and so on. So what if we export our emacs configuration to HTML and then publish it in a website? 🤯
+
+It probably doesn't have any real utility but it would be nice to have a exclusive web page to show our emacs config to our friends :)
+
+We can do this in two ways:
+
+- Manually, we can export the org file using the regular exportation feature of =org-mode= and then upload the resulting HTML somewhere
+- Automatically, our configuration will be rendered and published into a website every time we push some changes to our =dotfiles= repository
+
+Let's define what we need to do to have the automatic way:
+
+- Have a script that render our org config file
+- Run this script in a CI so it can be run every time we push some changes
+- Push the rendered HTML to an extra repository
+- Activate Github Pages in the extra repository, so we can have an url where we can see the resulting website
+
+Let's assume we have this structure in our =dotfiles= repository:
+
+#+begin_src shell
+├── emacs
+│   ├── config.org
+│   └── init.el
+└── scripts
+#+end_src
+
+This is a "regular" structure for a =dotfiles= repository, the extra =scripts= folder will be used later. Now let's deep into how it will work.
+
+* Automate the org file rendering
+
+We need to create to files and put them inside =scripts= folder:
+
+- =render-emacs-config-to-html.sh=, this will render our config file and place the resulting HTML file inside =scripts/output/index.html=
+- =org-render-html-minimal.el=, this is a minimal config file to be able to render org into html, it load the required packages and make some basic configuration
+
+Let's explore first =scripts/org-render-html-minimal.el=
+
+#+begin_src emacs-lisp
+(require 'package)
+
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
+
+(package-initialize)
+
+(package-refresh-contents)
+
+;; this is required to highlight code blocks properly
+(package-install 'htmlize)
+
+(require 'org)
+
+(require 'htmlize)
+
+;; For some reason the default value `inline-css' doesn't apply syntax highlighting correctly
+;; in the resulting html file so we need to change the value to `css'
+(setq org-html-htmlize-output-type 'css)
+#+end_src
+
+To export code blocks correctly we need the package =htmlize=, this package is available in MELPA so we need to configure MELPA and then install it from there.
+
+Now let's check =scripts/render-emacs-config-to-html.sh=
+
+#+begin_src shell
+#!/bin/sh
+
+# read the docs based theme
+echo "#+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/org/theme-readtheorg.setup" > index.org
+cat ../emacs/config.org >> index.org
+
+emacs index.org --batch -Q --load org-render-html-minimal.el -f org-html-export-to-html --kill
+
+# output will be the directory uploaded to the render repository so we have to put all the resulting files inside that folder
+mkdir output
+mv index.html output/
+#+end_src
+
+What are we doing here?
+
+We basically create a new org file called =index.org= and put a setup configuration file in it. You can avoid this step if you put this line directly in your config file, in this case we're using one of the themes available in this [[https://github.com/fniessen/org-html-themes][repository]], there is more themes available in this other [[https://olmon.gitlab.io/org-themes/][repository]] so you can choose the one you like the most.
+
+Now we need to run emacs with our previously defined configuration =org-render-html-minimal.el= and tell it to render our =index.org=.
+
+And finally we put the resulting =index.html= inside =output= folder. This folder will be used later.
+
+* Using Github actions to build and publish the rendered config
+
+We're going to use a Github action called [[https://github.com/marketplace/actions/push-directory-to-another-repository][push-directory-to-another-repository]], this action allow us to commit and push changes in another repository. Some configuration is required to use this action:
+
+** Create a extra repository
+
+This extra repository will be used to host our rendered config file, in my case this repository is =erickgnavar/emacs-config=, we also need to activate Github Pages in this repository and set it up to use =master= branch
+
+[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/set-up-github-pages.png]]
+
+The url generated, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.github.io/emacs-config]] in my case, is where our rendered config file will be published.
+
+** Create a personal token
+
+To be able to push changes into the new repository we have to create a personal access token, this can be made in [[https://github.com/settings/tokens/][account settings]], this token should have the =repo= scoped activated.
+
+[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/generate-github-api-token.png]]
+
+** Configure a secret variable in our dotfiles repository
+
+The Github action needs a secret variable called =API_TOKEN_GITHUB=, this variable allow the action to push changes into the new repository, we can create it by going to =repository/settings/secrets/New repository secret=
+
+[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/create-api-token-secret.png]]
+
+** Configure Github action config file
+
+Finally we have to create a file =.github/workflows/ci.yml= with the following content:
+
+#+begin_src yaml
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-emacs-config-page:
+    runs-on: ubuntu-latest
+    container: alpine:3.13.4
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install emacs
+        run: apk --update add emacs
+      - name: Render config into html
+        run: cd scripts && sh render-emacs-config-to-html.sh
+      - name: Pushes to destination repository
+        uses: cpina/github-action-push-to-another-repository@cp_instead_of_deleting
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: 'scripts/output'
+          destination-github-username: 'YOUR_GITHUB_USERNAME'
+          destination-repository-name: 'YOUR_NEW_REPOSITORY_NAME'
+          user-email: bot@emacs.bot
+#+end_src
+
+This action config file make some things:
+
+- Install emacs so we can run it to render our config file
+- Render our config file using the script =render-emacs-config-to-html.sh= we previously defined
+- Take the content of =scripts/output=, commit and push it into our destination repository, this is why we need to move the resulting HTML file into =output= folder
+- And finally it calls =github-action-push-to-another-repository= action which will do all the =git= stuff required to push the changes
+
+Now every time we push changes to our =dotfiles= repository this action will push the rendered config file to our destination repository, the commits will look like this:
+
+[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/destination-repo-commits-list.png]]
+
+And when we enter to the url generated from Github pages, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.github.io/emacs-config]] in my case, we can see our configuration rendered:
+
+[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/rendered-config-result-page.png]]
+
+Enjoy 🎉
