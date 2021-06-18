@@ -32,7 +32,7 @@ We first need a server which can run docker, most linux distros can be used for 
 
 - [[https://m.do.co/c/330e2b815378][Digital Ocean]] this will get you $100 on credits to be used in 2 months
 - [[https://hetzner.cloud/?ref=om6r8Z9OZrQq][Hetzner]] this will get you 20€ on credits, this provider has cheaper prices than Digital Ocean but it only have data centers in Europe
-- [[https://www.linode.com/lp/brand-free-credit-short/][Linode]] This is not a referral link but you can get $100 on credits, AFAIK it doesn't expire
+- [[https://www.linode.com/?r=f0455aac2f2cc4dd7f6f88ef517f59d994386a4c][Linode]] this will get you $100 on credits to be used in 2 months
 
 Once you get a server it's recommended to make some basic configurations like updating packages, setup a firewall, etc. You can follow this Linode [[https://www.linode.com/docs/security/securing-your-server/][guide]] to secure your server.
 
