@@ -1,0 +1,138 @@
+---
+title: Memes fuzzy finder using Alfred, fzf and jq
+date: 2022-06-18T22:10:56-05:00
+type: posts
+tags: [ alfred, macOS, fzf, jq ]
+---
+
+Let's create a Alfred workflow to search for memes in a folder(our collection) and put that image in the clipboard so we can user it wherever we need it. Yes, it sounds useless but it was fun to made.
+
+First we need to cover some things to understand how an Alfred workflow works. There are many types of elements to build a workflow, this time we're going to use 2 specific elements:
+- ~script filter~: prepare a list of options that can be filtered along as we type
+- ~run script~: run a command to send the selected option in the previous step into the system clipboard
+
+* Create a workflow
+
+Let's go to ~Alfred settings/Workflows/+/Blank workflow~
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/create-blank-workflow.png]]
+
+Name our new workflow, you can use whatever name you want, let's put "Meme fuzzy finder"
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/name-new-workflow.png]]
+
+Create a new element of type ~script filter~
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/create-script-filter-element.png]]
+
+Now we need to make some adjustments over the defaults values:
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-filter-initial-config.png]]
+
+- ~keyword~ if the word that will be used by Alfred to trigger this workflow, we're going to use ~meme~ so we can type ~meme something~ and it will return all the matches with ~something~.
+- Use ~/bin/zsh~ instead of ~/bin/bash~ as language, there will be a bug if we use ~bash~, more details later.
+- Select ~with input as {query}~ instead of ~with input as argv~, this allow us to read a injected value instead of reading ~argv~.
+- Now we need a script that makes the magic happens.
+
+~script filter~ can execute a script and it should return results in a json format like the following example:
+
+#+begin_src json
+{
+  "items": [
+    {
+      "title": "it's alive.gif",
+      "icon": {
+        "path": "/Users/erick/Documents/memes/it's alive.gif"
+      },
+      "arg": "/Users/erick/Documents/memes/it's alive.gif"
+    },
+    {
+      "title": "elmo on fire.gif",
+      "icon": {
+        "path": "/Users/erick/Documents/memes/elmo on fire.gif"
+      },
+      "arg": "/Users/erick/Documents/memes/elmo on fire.gif"
+    }
+  ]
+}
+#+end_src
+
+Every element of an ~item~ has a meaning:
+
+- ~title~ will be shown while we type
+- ~icon/path~ will render a preview of the selection
+- ~arg~ will be passed to the next step
+
+To produce this output we're going to use two tools:
+
+- [[https://github.com/junegunn/fzf][fzf]]: fuzzy finder to select an image as we type
+- [[https://stedolan.github.io/jq/][jq]]: tool to process ~json~ data
+
+We're going to combine these tools in the following script:
+
+#+begin_src zsh :results output
+# replace this with your collection folder
+dir='/Users/erick/Documents/memes/'
+
+# prepare a list of json elements using jq templating system
+items=$(ls $dir | fzf -f {query} | jq --arg dir $dir -Rn '
+def build_item($filename): {
+    "title": $filename,
+    "icon": {"path": "\($dir)\($filename)"},
+    "arg": "\($dir)\($filename)"
+};
+[
+    inputs
+    | select(length>0)
+    | build_item(.)
+]')
+
+# prepare the resulting json using the previous items and building a new json value
+jq -n --argjson items $items '{items: $items}'
+
+# this will send the result to ~stdout~, Alfred can read them from there
+#+end_src
+
+Some notes about the script:
+
+- ~{query}~ will be injected by Alfred when the workflow is active, we changed this after we create the workflow
+- Replace ~dir~ value with your collection folder, make sure directory ends with a ~/~, this is required because we concatenate that value with filename
+- Replace calls to ~fzf~ and ~jq~ using an absolute path, Alfred doesn't load our ~/.zshrc~ so it won't know where to find those programs, we can get full path using ~which~ e.g ~which jq~ will return ~/opt/homebrew/bin/jq~ in my case
+
+Now we have the script we need to copy it inside ~script filter~, the result should be like this:
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/list-filter-complete.png]]
+
+We can check it's working using the debug tool in Aflred and typing the keyword and a query term, for example: ~meme elmo~:
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-filter-debug.png]]
+
+* Copy chosen image to clipboard
+
+Now we need to define a second element, a ~run script action~:
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/new-run-script-action.png]]
+
+This time we just need to change one thing, language to ~AppleScript~ and now we can paste the following code to take the selected choice and send it to clipboard:
+
+#+begin_src applescript
+on run args
+  set the clipboard to POSIX file (first item of args)
+end
+#+end_src
+
+The result should be:
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-action-done.png]]
+
+After that we should have a workflow with two components:
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/complete-workflow.png]]
+
+* Demo
+
+And now when we type ~meme elmo~ Alfred will show the result and when we hit enter that image will be copied to clipboard.
+
+[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/demo.gif]]
+
+Enjoy :)
