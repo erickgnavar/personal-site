@@ -39,6 +39,12 @@ paginate = 20
   url = "https://twitter.com/erickgnavar/"
 
 [[params.social]]
+  name = "Twitch"
+  icon = "fab fa-twitch fa-2x"
+  weight = 1
+  url = "https://twitch.com/erickgnavar"
+
+[[params.social]]
   name = "Github"
   icon = "fab fa-github fa-2x"
   weight = 2
