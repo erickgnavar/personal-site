@@ -3,10 +3,10 @@ title: "About me"
 date: 2018-09-22T00:34:18-05:00
 ---
 
-Hi there 👋, I'm Erick Navarro, software developer.
+Hi there 👋, I'm Erick Navarro, software developer (a.k.a bugs creator).
 
-I've worked mostly doing web development using Python and Javascript but now I work using Elixir also doing web. I'm very interesting in functional programming and that's why I spend time learning cool tech like Haskell and Clojure.
+I've worked mostly doing web development using Python but now I work using Elixir also doing web. I'm very interesting in functional programming and that's why I spend time learning cool tech like Haskell and Clojure.
 
-I'm a emacs lover and that made me spend many hours tuning my emacs conf (I regret nothing).
+I'm a emacs lover and that made me spend many hours tuning my emacs config (I regret nothing).
 
-You can follow me on [[https://twitter.com/erickgnavar][twitter]] or [[https://github.com/erickgnavar][github]]
+You can follow me on [[https://twitter.com/erickgnavar][Twitter]], [[https://github.com/erickgnavar][GitHub]] and now also on [[https://twitch.tv/erickgnavar][Twitch]] where I stream about programming stuff in Spanish.
