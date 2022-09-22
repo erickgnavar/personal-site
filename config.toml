@@ -34,31 +34,31 @@ paginate = 20
 
 [[params.social]]
   name = "Twitter"
-  icon = "fab fa-twitter fa-2x"
+  icon = "fa fa-twitter fa-2x"
   weight = 1
   url = "https://twitter.com/erickgnavar/"
 
 [[params.social]]
   name = "Twitch"
-  icon = "fab fa-twitch fa-2x"
+  icon = "fa fa-twitch fa-2x"
   weight = 1
   url = "https://twitch.com/erickgnavar"
 
 [[params.social]]
   name = "Github"
-  icon = "fab fa-github fa-2x"
+  icon = "fa fa-github fa-2x"
   weight = 2
   url = "https://github.com/erickgnavar/"
 
 [[params.social]]
   name = "Gitlab"
-  icon = "fab fa-gitlab fa-2x"
+  icon = "fa fa-gitlab fa-2x"
   weight = 3
   url = "https://gitlab.com/erickgnavar/"
 
 [[params.social]]
   name = "Linkedin"
-  icon = "fab fa-linkedin fa-2x"
+  icon = "fa fa-linkedin fa-2x"
   weight = 4
   url = "https://linkedin.com/in/erickgnavar/"
 
