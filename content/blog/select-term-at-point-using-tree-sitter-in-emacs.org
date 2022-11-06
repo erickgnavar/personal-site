@@ -1,0 +1,83 @@
+---
+title: "Select term at point using tree sitter in emacs"
+date: 2022-11-06T01:26:36-06:00
+type: posts
+tags: [ tree sitter, emacs ]
+---
+
+Some days ago I saw a tweet(detail below) that show an interesting feature, a way to select terms using the mouse. After seeing that I thought it will be easy to implement using [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]].
+
+{{< tweet user="disconcision" id="1587156531203678208" >}}
+
+To be able to implement this we just need [[https://github.com/emacs-tree-sitter/elisp-tree-sitter][tree-sitter.el]] which will allow us to select terms using grammars.
+
+First we need to load some libraries, including ~tree-sitter.el~
+
+#+begin_src emacs-lisp
+(require 'tree-sitter)
+(require 'seq)
+(require 'cl-lib)
+#+end_src
+
+We're using overlays to highlight the term so we need a face with all the required properties.
+
+#+begin_src emacs-lisp
+(defvar highlight-face '((t :foreground "#000"
+                            :background "#00bfff"
+                            :weight bold)))
+#+end_src
+
+To be able to select term nodes we need to use a grammar, for this case we're going to use ~haskell~, which has a grammar included in [[https://github.com/emacs-tree-sitter/tree-sitter-langs][tree-sitter-langs.el]], in ~modes-mapping~ we can define all the valid node types for each language, for ~haskell~ we just define a few of them:
+- ~exp_apply~
+- ~exp_infix~
+- ~exp_in~
+- ~exp_cond~
+- ~exp_literal~
+- ~function~
+
+#+begin_quote
+The order of the terms should be from small to large, for example a ~function~ which can include other terms should be defined at last otherwise the whole function will be highlighted when any part of the function is clicked.
+#+end_quote
+
+#+begin_src emacs-lisp
+(defvar modes-mapping '((haskell-mode . (exp_apply exp_infix exp_in exp_cond exp_literal function ))))
+#+end_src
+
+Now we need to define a function that will check if an term exists at point, this will be done by extracting all the predefined grammar elements for the current ~major-mode~ and check if any of them match.
+
+#+begin_src emacs-lisp
+(defun get-text-node-at-point ()
+  "Get text node at point using predefined major mode options."
+  (let ((types (alist-get major-mode modes-mapping)))
+    (seq-some (lambda (type) (tree-sitter-node-at-pos type (point) t)) types)))
+#+end_src
+
+Now we need a function to highlight the term node at point and apply a new ~overlay~ using the face ~highlight-face~ defined lines above. ~when-let*~ is used to avoid raising an error in case there is no node at point.
+
+#+begin_src emacs-lisp
+(defun highlight-node-at-point ()
+  "Highlight term at point."
+  (interactive)
+  ;; remove all previous applied overlays
+  (remove-overlays (point-min) (point-max) 'face highlight-face)
+  (when-let* ((node (get-text-node-at-point))
+              (overlay (make-overlay (tsc-node-start-position node) (tsc-node-end-position node))))
+    (overlay-put overlay 'face highlight-face)))
+#+end_src
+
+The last part is to call ~highlight-node-at-point~ when we click in some part of the buffer. To do this we define a function that receive a mouse event and then bind it to left mouse button.
+
+#+begin_src emacs-lisp
+(defun mouse-click-handler (event)
+  "Run `highlight-node-at-point' using information of EVENT."
+  (interactive "e")
+  (save-excursion
+    (goto-char (posn-point (event-start event)))
+    (highlight-node-at-point)))
+
+(global-set-key [mouse-1] #'mouse-click-handler)
+#+end_src
+
+This can be extended by adding more languages and node types to ~modes-mapping~.
+
+Enjoy 🎉
