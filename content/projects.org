@@ -3,6 +3,22 @@ title: "Projects"
 date: 2018-12-23T22:29:26-05:00
 ---
 
+** Emacs packages
+
+#+attr_html: :width 100%
+| Project               | Description                                                                                |
+|-----------------------+--------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/linkode.el][linkode.el]]            | Upload code within a buffer or a region in Emacs to [[http://linkode.org][linkode.org]] (a pastebin like service). |
+|-----------------------+--------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/tree-sitter-ispell.el][tree-sitter-ispell.el]] | [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]] plugin to run ispell on text nodes in different languages                      |
+|-----------------------+--------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/flymake-sqlfluff][flymake-sqlfluff]]      | ~flymake~ plugin for SQL using [[https://www.sqlfluff.com][sqlfluff]]                                                    |
+|-----------------------+--------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/flymake-sqlfluff][flymake-ruff]]          | ~flymake~ plugin for python linter [[https://pypi.org/project/ruff/][ruff]]                                                    |
+|-----------------------+--------------------------------------------------------------------------------------------|
+| [[https://github.com/erickgnavar/cloak-mode][cloak-mode]]            | Minor package to hide sensitite data using multiple regex per major mode                   |
+|-----------------------+--------------------------------------------------------------------------------------------|
+
 ** Python libraries
 
 #+attr_html: :width 100%
@@ -26,22 +42,6 @@ date: 2018-12-23T22:29:26-05:00
 |---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_sale/][tracking_serpost_sale]]     | Integrate [[http://www.serpost.com.pe][Serpost]] tracking data in sale orders                                                                                                                |
 |---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-
-** Emacs packages
-
-#+attr_html: :width 100%
-| Project               | Description                                                                                |
-|-----------------------+--------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/linkode.el][linkode.el]]            | Upload code within a buffer or a region in Emacs to [[http://linkode.org][linkode.org]] (a pastebin like service). |
-|-----------------------+--------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/tree-sitter-ispell.el][tree-sitter-ispell.el]] | [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]] plugin to run ispell on text nodes in different languages                      |
-|-----------------------+--------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/flymake-sqlfluff][flymake-sqlfluff]]      | ~flymake~ plugin for SQL using [[https://www.sqlfluff.com][sqlfluff]]                                                    |
-|-----------------------+--------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/flymake-sqlfluff][flymake-ruff]]          | ~flymake~ plugin for python linter [[https://pypi.org/project/ruff/][ruff]]                                                    |
-|-----------------------+--------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/cloak-mode][cloak-mode]]            | Minor package to hide sensitite data using multiple regex per major mode                   |
-|-----------------------+--------------------------------------------------------------------------------------------|
 
 ** Alfred workflows
 
