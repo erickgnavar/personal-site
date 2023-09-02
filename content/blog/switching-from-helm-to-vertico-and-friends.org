@@ -1,0 +1,115 @@
+---
+title: "Switching from helm to vertico and friends"
+date: 2023-08-31T23:23:06-06:00
+type: posts
+tags: [ emacs, helm, vertico ]
+---
+
+I've been using ~helm~ for many years, since I started to use ~emacs~ itself. It was great because it is a "all in one" tool, very convenient when starting in ~emacs~ world.
+
+** The problem(?)
+
+Actually there is a not problem perse, just maybe the "startup time", I had the load deferred so the first time I call some function from ~helm~ there was a little "wait", nothing really bad but a little annoying
+
+** Motivation
+
+Just wanted to trying new things 😅
+
+** The new stuff
+
+There are new tools that are gaining popularity because of their approach: "just do one thing", these tools are:
+
+- [[https://elpa.gnu.org/packages/vertico.html][vertico]]: UI for completion, based on minibuffer, it also has a option to use a separate buffer, just like ~helm~
+- [[https://github.com/minad/marginalia][marginalia]]: Enhance the minibuffer with more context about the information shown
+- [[https://github.com/oantolin/orderless][orderless]]: completion style, add fuzzy search to filter between the data shown by ~vertico~
+- [[https://github.com/minad/consult][consult]]: commands for search and navigation
+- [[https://github.com/oantolin/embark][embark]]: runs commands given a context at point
+
+All of these tools rely on ~emacs~ builtin functionality as much as possible and try to adhere to the APIs of different builtin components, that's a nice approach :)
+
+** The migration
+
+Before migrating I needed to confirm that there were a replacement for every(or at least more of them) feature I use in my workflow, these features are:
+
+*** Fuzzy search in a project
+
+I was using [[https://github.com/emacs-helm/helm-ls-git][helm-ls-git]], which works on top oh ~helm~ and also put at the top all the files that have been modified, it uses ~git~ to get that information, it very useful because it give more context when searching for a file.
+
+I haven't found(yet) something that replace ~helm-ls-git~ but for fuzzy search I just can call ~project-find-file~, which is builtin in ~emacs~.
+
+*** Search and replace in a whole project
+
+For this I was using [[https://github.com/emacsorphanage/helm-ag][helm-ag]], it allow to search into project files content, make another filter using ~helm~ and also create an editable buffer with the results, once all the edits are done we can modify all the matched files with a single command.
+
+This can be done using ~embark-export~ function, which export all the content in the minibuffer and create a new buffer and use [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]] to have a editable buffer, that's a lot of manual steps, in ~helm-ag~ it was more easier so I wrote some code to have the same experience
+
+#+begin_src emacs-lisp
+(defun my/grep-edit-results ()
+  "Export results using `embark-export' and activate `wgrep'.
+This only runs for ripgrep results"
+  (interactive)
+  (when (cl-search "Ripgrep" (buffer-string))
+    ;; we use `run-at-time' to ensure all of these steps
+    ;; will be executed in order
+    (run-at-time 0 nil #'embark-export)
+    (run-at-time 0 nil #'wgrep-change-to-wgrep-mode)
+    (run-at-time 0 nil #'evil-normal-state)))
+
+(define-key minibuffer-mode-map (kbd "C-c C-e") #'my/grep-edit-results)
+#+end_src
+
+This can be executed from the ~minibuffer~ and only when it is a ~Ripgrep~ execution, this way I have the same as I used to with ~helm-ag~.
+
+*** Navigate the kill ring
+
+Many times I delete stuff from many buffers and put them together in a new buffer, to do that I rely on the ~kill-ring~ history, ~helm~ has a function ~helm-show-kill-ring~ with allow to fuzzy search in the history and then paste the selected item into the current buffer. ~consult~ has an option to that too ~consult-yank-from-kill-ring~. It is not show the options as ~helm~ but it does the work.
+
+*** Fuzzy search inside a buffer
+
+For this I used [[https://github.com/emacsorphanage/helm-swoop][helm-swoop]], ~consult~ already has a function that do the same, it is ~consult-line~
+
+*** Backup files
+
+[[https://github.com/antham/helm-backup][helm-backup]] is great, it create a backup of your current file on every save and store it in a git repository, it allow to look for all the versions using ~helm~, I wanted to still use it but I don't want to have ~helm~ installed just for one package, fortunately the author has another package [[https://github.com/antham/git-backup][git-backup]] which has all the functionality for backups has no dependency on ~helm~, with this I was able to reproduce what I have and with some ~elisp~ code.
+
+#+begin_src emacs-lisp
+(defvar my/backup-dir (expand-file-name "~/.git-backup"))
+
+(defun my/git-backup-versioning ()
+  "Save a version of the current file."
+  (unless (featurep 'git-backup)
+    (require 'git-backup))
+  (git-backup-version-file (executable-find "git") my/backup-dir '() (buffer-file-name)))
+
+(defun my/git-backup-run-action (command commit-hash)
+  "Execute COMMAND with COMMIT-HASH using another defaults arguments."
+  (apply command `(,(executable-find "git") ,my/backup-dir ,commit-hash ,(buffer-file-name))))
+
+(defun my/git-backup ()
+  "Navigate in versions of the current file."
+  (interactive)
+  (unless (featurep 'git-backup)
+    (require 'git-backup))
+  ;; for some reason an extra space after `%h|' is required to avoid an error when
+  ;; the shell command is executed
+  (let* ((candidates (git-backup-list-file-change-time (executable-find "git") my/backup-dir "%cI|%h| %ar" (buffer-file-name)))
+         (selection (completing-read "Pick revision: " candidates))
+         (commit-hash (nth 1 (string-split selection "|")))
+         (action (completing-read "Choose action: " '("diff" "new buffer" "replace current buffer"))))
+    (cond ((string-equal action "diff") (my/git-backup-run-action 'git-backup-create-ediff commit-hash))
+          ((string-equal action "new buffer") (my/git-backup-run-action 'git-backup-open-in-new-buffer commit-hash))
+          ((string-equal action "replace current buffer") (my/git-backup-run-action 'git-backup-replace-current-buffer commit-hash))
+          (t (message "Not valid option")))))
+
+(use-package git-backup
+  :ensure t
+  :hook (after-save . my/git-backup-versioning))
+#+end_src
+
+** Final thoughts
+
+For the time this post was written I've been using the new setup for just a few days, so far the experience was good, it feels a simple setup now and gave me some ideas for another features that I'd like to develop.
+
+Also you can see the diff after the migration in my [[https://github.com/erickgnavar/dotfiles/commit/6d60f30385afff9eef2a1a7e81215ea53d9f84f4][dotfiles]]
+
+Special thanks to [[https://github.com/oantolin][@oantolin]], creator or ~embark~, for helping me with some doubts in the telegram channel of emacs in Spanish [[https://t.me/emacs_es][emacs-es]]
