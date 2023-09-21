@@ -1,0 +1,81 @@
+---
+title: Code search Alfred workflow
+date: 2023-09-21T08:58:16-06:00
+type: posts
+tags: [ alfred, macOS, GitHub ]
+---
+
+Code search is a useful tool to search for examples about some function, class, etc. We're going to create a Alfred workflow to easily search into [[https://github.com/features/code-search/][GitHub Code search]] and [[https://sourcegraph.com/search][SourceGraph]]
+
+** Create a workflow
+
+Let's go to ~Alfred settings/Workflows/+/Blank workflow~
+
+[[file:/images/blog/code-search-alfred-workflow/create-blank-workflow.png]]
+
+Name our new workflow, you can use whatever name you want, let's put "Code search"
+
+[[file:/images/blog/code-search-alfred-workflow/name-new-workflow.png]]
+
+Create a new element of type ~script filter~
+
+[[file:/images/blog/code-search-alfred-workflow/create-script-filter-element.png]]
+
+Now we need to make some adjustments over the defaults values:
+
+- ~keyword~, we use ~cs~ for easy access
+- Language ~/bin/bash~
+- ~with input as {query}~
+
+And we need to put the following code into script box:
+
+#+begin_src shell
+cat << EOF
+{
+  "items": [
+    {
+      "title": "GitHub code search",
+      "arg": "https://cs.github.com/?scopeName=All+repos&scope=&q={query}"
+    },
+    {
+      "title": "SourceGraph",
+      "arg": "https://sourcegraph.com/search?q=context:global+{query}&patternType=standard"
+    }
+  ]
+}
+EOF
+#+end_src
+
+Here we're just printing a JSON file with the options to be selected, we now support 2 services:
+- GitHub Code Search
+- SourceGraph
+
+In case we need to add another one we can do it here.
+
+The resulting configuration should be like the below image:
+
+[[file:/images/blog/code-search-alfred-workflow/script-filter-complete.png]]
+
+** Open the browser using the selected service
+
+Now we need to define an ~action~ to open an URL in the browser
+
+[[file:/images/blog/code-search-alfred-workflow/create-open-url-action.png]]
+
+We leave all the defaults here because the ~script filter~ (defined in the previous step) will generate the URL.
+
+** Linking all together
+
+Now we need to link both components, we use the graphic tool in ~Alfred~, the result should be as the following image:
+
+[[file:/images/blog/code-search-alfred-workflow/linked-all-together.png]]
+
+** Result
+
+Now if we open ~Alfred~ and write for example: ~cs completing-read~ we'll see the following image:
+
+[[file:/images/blog/code-search-alfred-workflow/result.png]]
+
+If we press ~enter~ a new browser tab will be open with the selected service and input we wrote.
+
+Enjoy :)
