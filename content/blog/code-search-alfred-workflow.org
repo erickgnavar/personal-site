@@ -35,7 +35,7 @@ cat << EOF
   "items": [
     {
       "title": "GitHub code search",
-      "arg": "https://cs.github.com/?scopeName=All+repos&scope=&q={query}"
+      "arg": "https://github.com/search?type=code&q={query}"
     },
     {
       "title": "SourceGraph",
