@@ -1,0 +1,98 @@
+---
+title: "Simple OBS Client in Elixir"
+date: 2024-05-12T13:49:50-06:00
+type: posts
+tags: [ "elixir", "obs", "websocket" ]
+---
+
+Let's write a simple module to control OBS using websockets.
+
+[[https://obsproject.com][OBS]] already have a websocket server which can accept many command to control its features. We're going to use that websocket server to make some actions like:
+- Change scene
+- Apply source filters
+- Many other things
+
+** Basic configuration
+
+First we need to install a websocket client, [[https://hex.pm/packages/fresh][fresh]] is a easy to use client that works on top on [[https://hex.pm/packages/mint][mint]].
+
+Let's add the following code to our ~mix.exs~ file.
+
+#+begin_src diff
+     {:earmark, "~> 1.4"},
++    {:fresh, "~> 0.4.4"}
+   ]
+ end
+#+end_src
+
+Now we need to define a module that use all the functionality of ~fresh~, like the following code:
+
+#+begin_src elixir
+defmodule MyApp.OBS do
+  use Fresh
+
+  def handle_connect(_status, _headers, state) do
+    payload = %{"op" => 1, "d" => %{rpcVersion: 1}}
+    {:reply, {:text, Jason.encode!(payload)}, state}
+  end
+end
+#+end_src
+
+At this point this just connect to the websocket and responds with a specific message ~{"op": 1, "d": {"rpcVersion": 1}}~, this is required to "authenticate" against OBS websocket server. This according to [[https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#hello-opcode-0][OBS websocket protocol]]. In case we set up a password in our OBS settings we need to modify this response.
+
+Now we need to start our client, we can do it manually or using ~application.ex~ like the following code:
+
+#+begin_src diff
+ @impl true
+ def start(_type, _args) do
+   children = [
++    # OBS websocket client
++    {MyApp.OBS,
++     uri: "ws://localhost:4455", state: nil, opts: [name: {:local, :obs_websocket_client}]}
+   ]
+ end
+#+end_src
+
+Here is where we define 2 things:
+
+- the location of the websocket server, if we are running ~OBS~ in the same machine we can use ~ws://localhost:4455~, this is the default address that ~OBS~ uses.
+- the "name" of the process that will be used later to send messages to. In this case is ~:obs_websocket_client~. The client is just an ~erlang~ process so we need some way to send messages to it.
+
+** COMMENT Controlling OBS
+
+Now that we have a working websocket client we can send messages to ~OBS~.
+
+We are going to implement a function to change the scene in ~OBS~, to do that we need to use the [[https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#setcurrentprogramscene][SetCurrentProgramScene]] action.
+
+Let's add 3 functions to our ~OBS~ module.
+
+
+#+begin_src diff
++def change_scene(scene_name) do
++  send_message("SetCurrentProgramScene", %{"sceneName" => scene_name})
++end
+
++defp send_message(type, data) do
++  payload = %{
++    "op" => 6,
++    "d" => %{
++      # generate a random identifier, we can use any other module
++      "requestId" => Ecto.UUID.generate(),
++      "requestType" => type,
++      "requestData" => data
++    }
++  }
+
++  send(:obs_websocket_client, {:send, Jason.encode!(payload)})
++end
+
++def handle_info({:send, message}, state) do
++  {:reply, [{:text, message}], state}
++end
+#+end_src
+
+- ~send_message/2~, receive a type and a map, it will use these to prepare a payload which will be send to our websocket client. We're using ~send/2~ because our client is just another process, which have the name defined previously in ~application.ex~: ~:obs_websocket_client~.
+- ~handle_info/2~, this will receive the message and send it to the websocket server, because ~OBS~ protocol just use plain text we use a ~{:text, message}~ response.
+- ~change_scene/1~ this just reuse the previously defined functions. We send the ~SetCurrentProgramScence~ message with a specific payload. Now we can just call ~MyApp.OBS.change_scene("gaming")~ and it will be changed.
+
+Enjoy 🎉.
