@@ -1,0 +1,89 @@
+---
+title: "Moving to Emacs Tree Sitter Modes"
+date: 2024-05-21T22:30:15-06:00
+type: posts
+tags: [ tree-sitter, emacs ]
+---
+
+I'm currently using emacs 30 and this version has support for more languages using the new ~ts-modes~, I've been using [[https://github.com/emacs-tree-sitter/elisp-tree-sitter/][emacs-tree-sitter]] package since Emacs added dynamic modules feature.
+
+Now using ~emacs 30~ I give a try to use only ~ts-modes~ and maybe delete some external packages I was using.
+
+** How to install grammars
+
+Emacs doesn't have a built-in way to install automatically most common grammar so we're going to use a package that can handle that, we use [[https://github.com/emacs-tree-sitter/tree-sitter-langs/][tree-sitter-langs]] package, which is a repository for grammars.
+
+When we install it it download and install all the available grammars in its own directory but to be used by emacs ~ts-modes~ we need to put them inside ~/.emacs.d/tree-sitter~ directory. I write a helper function to accomplish this:
+
+#+begin_src emacs-lisp
+(defun my/copy-grammars-to-emacs-tree-sitter-dir ()
+  "Copy tree-sitter grammar files to native Emacs dir."
+  (interactive)
+  (let* ((files (directory-files (tree-sitter-langs--bin-dir) nil "\\.dylib$")))
+    (dolist (grammar-file files)
+      (copy-file (concat (tree-sitter-langs--bin-dir) grammar-file) (concat (expand-file-name user-emacs-directory) "tree-sitter/" "libtree-sitter-" grammar-file) t)
+      (message "%s grammar files copied" (length files)))))
+#+end_src
+
+This will take all the compiled grammars by [[https://github.com/emacs-tree-sitter/tree-sitter-langs/][tree-sitter-langs]] and put them inside a directory that ~emacs~ can found them. This only works for ~macOS~, because of the compiled grammars have ~.dylib~ extension but it can be adjusted to any other operating systems.
+
+** The migration
+
+I use ~straight.el~ to manage my packages so I'm going to use it to configure built-in ~ts-modes~, by now I only migrated a few modes.
+
+For ~elixir~:
+
+#+begin_src emacs-lisp
+(use-package elixir-ts-mode
+  :straight (:type built-in)
+  :mode (("\\.ex\\'" . elixir-ts-mode)
+         ("\\.exs\\'" . elixir-ts-mode)
+         ("\\mix.lock\\'" . elixir-ts-mode)))
+#+end_src
+
+For ~docker~:
+
+#+begin_src emacs-lisp
+(use-package dockerfile-ts-mode
+  :straight (:type built-in)
+  :defer t
+  :mode (("\\Dockerfile\\'" . dockerfile-ts-mode)
+         ("\\.dockerignore\\'" . dockerfile-ts-mode)))
+#+end_src
+
+For ~typescript~
+
+#+begin_src emacs-lisp
+(use-package typescript-ts-mode
+  :straight (:type built-in)
+  :defer t
+  :mode "\\.tsx?\\'")
+
+#+end_src
+
+For ~toml~
+
+#+begin_src emacs-lisp
+(use-package toml-ts-mode
+  :straight (:type built-in)
+  :mode "\\.toml\\'"
+  :defer t)
+#+end_src
+
+For ~yaml~
+
+#+begin_src emacs-lisp
+(use-package yaml-ts-mode
+  :straight (:type built-in)
+  :mode "\\.ya?ml\\'")
+#+end_src
+
+With this now I have 5 dependencies less in my configuration :).
+
+** Conclusion
+
+I'm in the process to migrate others modes like ~python-mode~, ~go-mode~ and so on but in some cases syntax highlighting is not the best. For example ~shell-script-mode~ has better highlight than ~bash-ts-mode~. I'm been using these "new" ~ts-modes~ for a few weeks and everything is working well.
+
+** Bonus
+
+I also updated a [[https://github.com/erickgnavar/tree-sitter-ispell.el/][package]] I use to run ~ispell~ on text nodes to support built-in tree-sitter support. Now it supports ~tree-sitter.el~ and ~treesit~ packages.
