@@ -58,7 +58,7 @@ Here is where we define 2 things:
 - the location of the websocket server, if we are running ~OBS~ in the same machine we can use ~ws://localhost:4455~, this is the default address that ~OBS~ uses.
 - the "name" of the process that will be used later to send messages to. In this case is ~:obs_websocket_client~. The client is just an ~erlang~ process so we need some way to send messages to it.
 
-** COMMENT Controlling OBS
+** Controlling OBS
 
 Now that we have a working websocket client we can send messages to ~OBS~.
 
