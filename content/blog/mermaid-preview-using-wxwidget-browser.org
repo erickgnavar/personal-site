@@ -1,0 +1,41 @@
+---
+title: "Mermaid preview using wxwidget browser"
+date: 2024-06-05T08:19:05-06:00
+type: posts
+tags: [emacs, mermaid]
+---
+
+[[https://mermaid.js.org][Mermaid.js]] is a great tool to make diagrams in plain text, I use it a lot and I wanted to have a way to see previews of the code I was writing.
+There are some options to do that but they require to have a [[https://github.com/mermaid-js/mermaid-cli][mermaid-cli]] installed, which requires ~nodejs~ as well.
+
+Emacs has a built-in webkit browser, in case it was compiled with ~--with-xwidgets~ flag, and mermaid run on js so it should be possible to just run the code I want in the browser and see it there.
+
+This function makes the magic, it just take a region previously selected, which have the mermaid code, create a temp file and write some ~HTML~ there(including our mermaid code).
+
+#+begin_src emacs-lisp
+(defun my/preview-mermaid ()
+  "Render region inside a webit embebed browser."
+  (interactive)
+  (unless (region-active-p)
+    (user-error "Select a region first"))
+  (let* ((path (concat (make-temp-file (temporary-file-directory)) ".html"))
+         (mermaid-code (buffer-substring-no-properties (region-beginning) (region-end))))
+    (save-excursion
+      (with-temp-buffer
+        (insert "<body>
+  <pre class=\"mermaid\">")
+        (insert mermaid-code)
+        ;; js script copied from mermaid documentation
+        (insert "</pre>
+  <script type=\"module\">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+</body>")
+        (write-file path)))
+    (xwidget-webkit-browse-url (format "file://%s" path))))
+#+end_src
+
+** Demo
+
+[[file:/images/blog/mermaid-preview-using-wxwidget-browser/mermaid-preview.gif]]
