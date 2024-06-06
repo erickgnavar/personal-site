@@ -3,6 +3,8 @@ title: "Mermaid preview using xwidget browser"
 date: 2024-06-05T08:19:05-06:00
 type: posts
 tags: [emacs, mermaid]
+aliases:
+  - /blog/mermaid-preview-using-wxwidget-browser
 ---
 
 [[https://mermaid.js.org][Mermaid.js]] is a great tool to make diagrams in plain text, I use it a lot and I wanted to have a way to see previews of the code I was writing.
