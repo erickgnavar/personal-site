@@ -1,5 +1,5 @@
 ---
-title: "Mermaid preview using wxwidget browser"
+title: "Mermaid preview using xwidget browser"
 date: 2024-06-05T08:19:05-06:00
 type: posts
 tags: [emacs, mermaid]
