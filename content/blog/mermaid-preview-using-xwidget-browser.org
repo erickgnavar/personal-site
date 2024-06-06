@@ -40,4 +40,4 @@ This function makes the magic, it just take a region previously selected, which 
 
 ** Demo
 
-[[file:/images/blog/mermaid-preview-using-wxwidget-browser/mermaid-preview.gif]]
+[[file:/images/blog/mermaid-preview-using-xwidget-browser/mermaid-preview.gif]]
