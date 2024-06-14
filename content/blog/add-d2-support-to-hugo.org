@@ -1,0 +1,132 @@
+---
+title: "Add D2 support to Hugo"
+date: 2024-06-13T06:49:06-06:00
+type: posts
+tags: [ hugo, d2 ]
+---
+
+[[https://d2lang.com][D2]] is declarative language to generate diagrams, it's like mermaid on steroids, it has a ~cli~ so it's easy to use.
+
+Hugo doesn't support it at the moment of writing this, there is an open [[https://github.com/gohugoio/hugo/issues/10579][issue]] where the conversation is being done.
+
+So in the meantime official support is added we're going to make our own integration. It will have 2 parts:
+
+- A little HTTP server that receives the ~d2~ code and return a resulting ~SVG~
+- A custom [[https://gohugo.io/render-hooks/code-blocks/][hugo code block render hook]]
+
+** A simple HTTP server in ~go~
+
+This server only uses standard library and do the follow:
+
+- receive ~d2~ code in a ~POST~ payload.
+- call ~d2~ cli and get its ~std output~.
+- return this ~output~ as response body.
+
+#+begin_src go
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"net/http"
+	"os/exec"
+)
+
+func handleRenderRequest(w http.ResponseWriter, r *http.Request) {
+	requestBody, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	defer r.Body.Close()
+
+	output, err := renderText(string(requestBody))
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, output)
+}
+
+func renderText(content string) (string, error) {
+	// d2 -, will render the text received in stdin
+	command := exec.Command("d2", "-")
+	command.Stdin = bytes.NewBuffer([]byte(content))
+	output, err := command.Output()
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
+}
+
+func main() {
+	http.HandleFunc("POST /render", handleRenderRequest)
+	http.ListenAndServe(":8080", nil)
+}
+#+end_src
+
+#+begin_quote
+We can also use ~d2~ as a package but using it as a CLI is less code.
+#+end_quote
+
+Now if we send a request the following request:
+
+#+begin_src restclient
+POST http://localhost:8080/render
+shape: sequence_diagram
+alice -> bob: What does it mean\nto be well-adjusted?
+bob -> alice: The ability to play bridge or\ngolf as if they were games.
+#+end_src
+
+[[file:/images/blog/add-d2-support-to-hugo/render-post-result.png]]
+
+** Custom code block render hook
+
+~Hugo~ allow us to define custom code block render hooks, we're going to define a custom one using ~d2~ hook so when we define the following code it will call our server and insert its resulting ~SVG~.
+
+#+begin_src markdown
+```d2
+D2 code here
+```
+#+end_src
+
+Now we need to create a new file in ~layouts/_default/_markup/render-codeblock-d2.html~ and put the following code:
+
+
+#+begin_src html
+{{- $renderHookName := "d2" }}
+
+{{- $inner := trim .Inner "\n\r" }}
+{{- $position := .Position }}
+
+{{- $apiEndpoint := "http://localhost:8080/render" }}
+
+{{- $opts := dict "method" "post" "body" $inner }}
+{{- with resources.GetRemote $apiEndpoint $opts }}
+  {{- with .Err }}
+    {{- errorf "The %q code block render hook was unable to get the remote diagram. See %s. %s" $renderHookName $position . }}
+  {{- else }}
+      <div style="width: 600px">
+    {{ .Content | safeHTML }}
+      </div>
+  {{- end }}
+{{- else }}
+  {{- errorf "The %q code block render hook was unable to get the remote diagram. See %s" $renderHookName $position }}
+{{- end }}
+#+end_src
+
+This code uses ~resources.GetRemote~ to make a ~POST~ request to our server and then insert the response content as part of the document.
+
+#+begin_quote
+The render will only be done on build time so we don't need to have the render server always on
+#+end_quote
+
+** Conclusion
+
+~Hugo~ allows us to add custom features to our site and ~go~ allows us to accomplish task using on only standard library.
+
+Enjoy! 🎉
