@@ -93,3 +93,8 @@ paginate = 20
   name = "Contact me"
   url = "mailto:erick@navarro.io?subject=Hello"
   weight = 6
+
+[[menu.main]]
+  name = "Consultancy (ES)"
+  url = "https://tidycal.com/erickgnavar"
+  weight = 7
