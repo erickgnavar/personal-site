@@ -2,7 +2,9 @@
 title: "Meme generator in emacs"
 date: 2020-10-03T22:27:26-05:00
 type: posts
-tags: [ emacs, emacs lisp ]
+tags: [ emacs, emacs lisp, til ]
+aliases:
+  - /til/meme-generator-in-emacs/
 ---
 
 =#TIL= it is possible to create memes in emacs using [[https://github.com/larsmagne/meme][meme]], this package allow to choose an image and add some text to it, we can also select any image and use it.
