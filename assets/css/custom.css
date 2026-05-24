@@ -1,0 +1,20 @@
+.w {
+  max-width: 800px;
+  padding-top: 1rem;
+}
+
+.post-meta-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0.5rem 0;
+}
+
+.post-meta-line time {
+  font-size: 0.9em;
+}
+
+.site-footer {
+  text-align: center;
+  padding-top: 1rem;
+}
