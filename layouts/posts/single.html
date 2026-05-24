@@ -1,6 +1,9 @@
 {{ define "main" }}
 <article>
-  <h1>{{ .Title }}</h1>
+  <div class="post-title-line">
+    <h1>{{ .Title }}</h1>
+    <span class="reading-time">{{ .ReadingTime }} min read</span>
+  </div>
   <div class="post-meta-line">
     <div class="post-tags">
       {{ if .Params.tags }}
