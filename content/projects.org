@@ -3,73 +3,59 @@ title: "Projects"
 date: 2018-12-23T22:29:26-05:00
 ---
 
-** Emacs packages
+* Emacs packages
 
-#+attr_html: :width 100%
-| Project               | Description                                                                                            |
-|-----------------------+--------------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/linkode.el][linkode.el]]            | Upload code within a buffer or a region in Emacs to [[http://linkode.org][linkode.org]] (a pastebin like service).             |
-|-----------------------+--------------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/tree-sitter-ispell.el][tree-sitter-ispell.el]] | [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]] plugin to run ispell on text nodes in different languages                                  |
-|-----------------------+--------------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/treesit-ispell.el][treesit-ispell.el]]     | ~treesit~ plugin to run ispell on text nodes in different languages. This use native ~treesit~ package |
-|-----------------------+--------------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/flymake-sqlfluff][flymake-sqlfluff]]      | ~flymake~ plugin for SQL using [[https://www.sqlfluff.com][sqlfluff]]                                                                |
-|-----------------------+--------------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/flymake-ruff][flymake-ruff]]          | ~flymake~ plugin for python linter [[https://pypi.org/project/ruff/][ruff]]                                                                |
-|-----------------------+--------------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/cloak-mode][cloak-mode]]            | Minor package to hide sensitite data using multiple regex per major mode                               |
-|-----------------------+--------------------------------------------------------------------------------------------------------|
+** [[https://github.com/erickgnavar/linkode.el][linkode.el]]
+Upload buffer or region to [[http://linkode.org][linkode.org]], a pastebin-like service.
 
-** Python libraries
+** [[https://github.com/erickgnavar/tree-sitter-ispell.el][tree-sitter-ispell.el]]
+[[https://tree-sitter.github.io/tree-sitter/][tree-sitter]] plugin to run ispell on text nodes across languages.
 
-#+attr_html: :width 100%
-|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Project  | Description                                                                                                                                                                           |
-|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [[https://pypi.org/project/serpost/][Serpost]]  | Fetch tracking data from Peruvian postal service [[http://www.serpost.com.pe][Serpost]] using a tracking number                                                                                                      |
-|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [[https://pypi.org/project/jr_tools/][jr_tools]] | Upload and configure reports in Jasper Server. It uses a yaml based configuration file to define the reports, files, parameters, etc and upload them to Jasper Server through its API |
-|----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+** [[https://github.com/erickgnavar/treesit-ispell.el][treesit-ispell.el]]
+Same as above but using Emacs's native ~treesit~ package.
 
-** Odoo modules
+** [[https://github.com/erickgnavar/flymake-sqlfluff][flymake-sqlfluff]]
+~flymake~ plugin for SQL linting via [[https://www.sqlfluff.com][sqlfluff]].
 
-#+attr_html: :width 100%
-|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Project                   | Description                                                                                                                                                   |
-|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [[https://apps.odoo.com/apps/modules/11.0/l10n_pe_import_rxh/][l10n_pe_import_rxh]]        | Read an RxH(a Peruvian invoice emitted by freelance workers) XML document and import its content to Odoo, this module convert the RxH into a supplier invoice |
-|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_purchase/][tracking_serpost_purchase]] | Integrate [[http://www.serpost.com.pe][Serpost]] tracking data in purchase orders                                                                                                            |
-|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_sale/][tracking_serpost_sale]]     | Integrate [[http://www.serpost.com.pe][Serpost]] tracking data in sale orders                                                                                                                |
-|---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+** [[https://github.com/erickgnavar/flymake-ruff][flymake-ruff]]
+~flymake~ plugin for Python linting via [[https://pypi.org/project/ruff/][ruff]].
 
-** Alfred workflows
+** [[https://github.com/erickgnavar/cloak-mode][cloak-mode]]
+Minor mode to hide sensitive data using per-major-mode regex patterns.
 
-#+attr_html: :width 100%
-|-------------------+---------------------------------------------------------------------------------------------------|
-| Project           | Description                                                                                       |
-|-------------------+---------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/coinstats-alfred-workflow][coinstats]]         | Ask for a crypto currency price in [[https://coinmarketcap.com][Coinmarketcap]] API.                                             |
-|-------------------+---------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/currency-exchange-alfred-workflow][currency-exchange]] | Convert amounts between currencies using the rate from [[https://free.currencyconverterapi.com]] API. |
-|-------------------+---------------------------------------------------------------------------------------------------|
+* Python libraries
 
-** Web apps
+** [[https://pypi.org/project/serpost/][Serpost]]
+Fetch parcel tracking data from Peru's postal service using a tracking number.
 
-#+attr_html: :width 100%
-|---------+--------------------------------------------------------------------------------------------------------------------------------------|
-| Project | Description                                                                                                                          |
-|---------+--------------------------------------------------------------------------------------------------------------------------------------|
-| [[https://github.com/erickgnavar/proma][proma]]   | Manage clients, projects, time sheets, etc. It is useful to emit invoices and have records of the projects you have been working on. |
-|---------+--------------------------------------------------------------------------------------------------------------------------------------|
+** [[https://pypi.org/project/jr_tools/][jr_tools]]
+Upload and configure reports in Jasper Server via a YAML-based config file.
 
-** macOS apps
+* Odoo modules
 
-#+attr_html: :width 100%
-|----------+-------------------------------------------------|
-| Project  | Description                                     |
-|----------+-------------------------------------------------|
-| [[http://erickgnavar.github.io/dynowall/][dynowall]] | Change desktop wallpaper using [[https://unsplash.com][Unsplash]] images. |
-|----------+-------------------------------------------------|
+** [[https://apps.odoo.com/apps/modules/11.0/l10n_pe_import_rxh/][l10n_pe_import_rxh]]
+Import Peruvian RxH XML invoices and convert them into Odoo supplier invoices.
+
+** [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_purchase/][tracking_serpost_purchase]]
+[[http://www.serpost.com.pe][Serpost]] tracking data integrated into purchase orders.
+
+** [[https://apps.odoo.com/apps/modules/11.0/tracking_serpost_sale/][tracking_serpost_sale]]
+[[http://www.serpost.com.pe][Serpost]] tracking data integrated into sale orders.
+
+* Alfred workflows
+
+** [[https://github.com/erickgnavar/coinstats-alfred-workflow][coinstats]]
+Query cryptocurrency prices via the [[https://coinmarketcap.com][CoinMarketCap]] API from Alfred.
+
+** [[https://github.com/erickgnavar/currency-exchange-alfred-workflow][currency-exchange]]
+Convert between currencies using exchange rates from a [[https://free.currencyconverterapi.com][free API]].
+
+* Web apps
+
+** [[https://github.com/erickgnavar/proma][proma]]
+Manage clients, projects, timesheets, and invoices in one place.
+
+* macOS apps
+
+** [[http://erickgnavar.github.io/dynowall/][dynowall]]
+Cycle your desktop wallpaper automatically using [[https://unsplash.com][Unsplash]] images.
