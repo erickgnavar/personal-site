@@ -1,0 +1,30 @@
+{{ $current := . }}
+{{ $related := slice }}
+{{ range .Site.RegularPages }}
+{{ $otherPage := . }}
+{{ if and (ne . $current) (.Params.tags) }}
+{{ range .Params.tags }}
+{{ if in $current.Params.tags . }}
+{{ $related = $related | append $otherPage }}
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+{{ $uniqueRelated := slice }}
+{{ range $related }}
+{{ if not (in $uniqueRelated .) }}
+{{ $uniqueRelated = $uniqueRelated | append . }}
+{{ end }}
+{{ end }}
+{{ if $uniqueRelated }}
+<aside class="related-posts">
+  <h2>Related</h2>
+  <ul>
+    {{ range first 3 $uniqueRelated }}
+    <li>
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    </li>
+    {{ end }}
+  </ul>
+</aside>
+{{ end }}
