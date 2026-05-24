@@ -19,7 +19,7 @@ It's a "simple mode" but it can be used for many things like compile and run a p
 
 In the following example we're compiling this blog using hugo binary:
 
-[[file:/images/blog/using-compilation-mode-to-run-all-the-things/run-mx-compile.gif]]
+[[file:/images/posts/using-compilation-mode-to-run-all-the-things/run-mx-compile.gif]]
 
 ** From code
 
@@ -89,7 +89,7 @@ When we're making changes in our code we want to re-run our compilation process 
 (evil-leader/set-key "R" 'recompile)
 #+end_src
 
-[[file:/images/blog/using-compilation-mode-to-run-all-the-things/run-recompile.gif]]
+[[file:/images/posts/using-compilation-mode-to-run-all-the-things/run-recompile.gif]]
 
 But it can be attached to any key binding, for example:
 

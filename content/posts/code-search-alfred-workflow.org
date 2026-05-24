@@ -13,15 +13,15 @@ Code search is a useful tool to search for examples about some function, class, 
 
 Let's go to ~Alfred settings/Workflows/+/Blank workflow~
 
-[[file:/images/blog/code-search-alfred-workflow/create-blank-workflow.png]]
+[[file:/images/posts/code-search-alfred-workflow/create-blank-workflow.png]]
 
 Name our new workflow, you can use whatever name you want, let's put "Code search"
 
-[[file:/images/blog/code-search-alfred-workflow/name-new-workflow.png]]
+[[file:/images/posts/code-search-alfred-workflow/name-new-workflow.png]]
 
 Create a new element of type ~script filter~
 
-[[file:/images/blog/code-search-alfred-workflow/create-script-filter-element.png]]
+[[file:/images/posts/code-search-alfred-workflow/create-script-filter-element.png]]
 
 Now we need to make some adjustments over the defaults values:
 
@@ -56,13 +56,13 @@ In case we need to add another one we can do it here.
 
 The resulting configuration should be like the below image:
 
-[[file:/images/blog/code-search-alfred-workflow/script-filter-complete.png]]
+[[file:/images/posts/code-search-alfred-workflow/script-filter-complete.png]]
 
 ** Open the browser using the selected service
 
 Now we need to define an ~action~ to open an URL in the browser
 
-[[file:/images/blog/code-search-alfred-workflow/create-open-url-action.png]]
+[[file:/images/posts/code-search-alfred-workflow/create-open-url-action.png]]
 
 We leave all the defaults here because the ~script filter~ (defined in the previous step) will generate the URL.
 
@@ -70,13 +70,13 @@ We leave all the defaults here because the ~script filter~ (defined in the previ
 
 Now we need to link both components, we use the graphic tool in ~Alfred~, the result should be as the following image:
 
-[[file:/images/blog/code-search-alfred-workflow/linked-all-together.png]]
+[[file:/images/posts/code-search-alfred-workflow/linked-all-together.png]]
 
 ** Result
 
 Now if we open ~Alfred~ and write for example: ~cs completing-read~ we'll see the following image:
 
-[[file:/images/blog/code-search-alfred-workflow/result.png]]
+[[file:/images/posts/code-search-alfred-workflow/result.png]]
 
 If we press ~enter~ a new browser tab will be open with the selected service and input we wrote.
 

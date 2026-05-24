@@ -52,12 +52,12 @@ Now we can run =M-x meme= and we can choose a base image:
 
 #+CAPTION: Pick meme
 #+NAME: fig:pick-meme
-[[file:/images/til/meme-generator-in-emacs/pick-meme.png]]
+[[file:/images/posts/meme-generator-in-emacs/pick-meme.png]]
 
 And then we can and add some text to it, like the image below:
 
 #+CAPTION: Adding text
 #+NAME: fig:adding-text
-[[file:/images/til/meme-generator-in-emacs/edit-text.png]]
+[[file:/images/posts/meme-generator-in-emacs/edit-text.png]]
 
 Enjoy! 🎉

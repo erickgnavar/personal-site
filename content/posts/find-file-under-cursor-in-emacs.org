@@ -34,6 +34,6 @@ With all of this done we just need to replace the regular behaviour of =gf= with
 
 Demo
 
-[[file:/images/til/find-file-under-cursor-in-emacs/demo.gif]]
+[[file:/images/posts/find-file-under-cursor-in-emacs/demo.gif]]
 
 And that's it. Enjoy! 🎉

@@ -17,19 +17,19 @@ First we need to cover some things to understand how an Alfred workflow works. T
 
 Let's go to ~Alfred settings/Workflows/+/Blank workflow~
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/create-blank-workflow.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/create-blank-workflow.png]]
 
 Name our new workflow, you can use whatever name you want, let's put "Meme fuzzy finder"
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/name-new-workflow.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/name-new-workflow.png]]
 
 Create a new element of type ~script filter~
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/create-script-filter-element.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/create-script-filter-element.png]]
 
 Now we need to make some adjustments over the defaults values:
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-filter-initial-config.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-filter-initial-config.png]]
 
 - ~keyword~ if the word that will be used by Alfred to trigger this workflow, we're going to use ~meme~ so we can type ~meme something~ and it will return all the matches with ~something~.
 - Use ~/bin/zsh~ instead of ~/bin/bash~ as language, there will be a bug if we use ~bash~, more details later.
@@ -103,17 +103,17 @@ Some notes about the script:
 
 Now we have the script we need to copy it inside ~script filter~, the result should be like this:
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/list-filter-complete.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/list-filter-complete.png]]
 
 We can check it's working using the debug tool in Aflred and typing the keyword and a query term, for example: ~meme elmo~:
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-filter-debug.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-filter-debug.png]]
 
 * Copy chosen image to clipboard
 
 Now we need to define a second element, a ~run script action~:
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/new-run-script-action.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/new-run-script-action.png]]
 
 This time we just need to change one thing, language to ~AppleScript~ and now we can paste the following code to take the selected choice and send it to clipboard:
 
@@ -125,16 +125,16 @@ end
 
 The result should be:
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-action-done.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-action-done.png]]
 
 After that we should have a workflow with two components:
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/complete-workflow.png]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/complete-workflow.png]]
 
 * Demo
 
 And now when we type ~meme elmo~ Alfred will show the result and when we hit enter that image will be copied to clipboard.
 
-[[file:/images/blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/demo.gif]]
+[[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/demo.gif]]
 
 Enjoy :)

@@ -99,7 +99,7 @@ We're going to use a Github action called [[https://github.com/marketplace/actio
 
 This extra repository will be used to host our rendered config file, in my case this repository is =erickgnavar/emacs-config=, we also need to activate Github Pages in this repository and set it up to use =master= branch
 
-[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/set-up-github-pages.png]]
+[[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/set-up-github-pages.png]]
 
 The url generated, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.github.io/emacs-config]] in my case, is where our rendered config file will be published.
 
@@ -107,13 +107,13 @@ The url generated, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.gi
 
 To be able to push changes into the new repository we have to create a personal access token, this can be made in [[https://github.com/settings/tokens/][account settings]], this token should have the =repo= scoped activated.
 
-[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/generate-github-api-token.png]]
+[[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/generate-github-api-token.png]]
 
 ** Configure a secret variable in our dotfiles repository
 
 The Github action needs a secret variable called =API_TOKEN_GITHUB=, this variable allow the action to push changes into the new repository, we can create it by going to =repository/settings/secrets/New repository secret=
 
-[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/create-api-token-secret.png]]
+[[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/create-api-token-secret.png]]
 
 ** Configure Github action config file
 
@@ -156,10 +156,10 @@ This action config file make some things:
 
 Now every time we push changes to our =dotfiles= repository this action will push the rendered config file to our destination repository, the commits will look like this:
 
-[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/destination-repo-commits-list.png]]
+[[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/destination-repo-commits-list.png]]
 
 And when we enter to the url generated from Github pages, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.github.io/emacs-config]] in my case, we can see our configuration rendered:
 
-[[file:/images/blog/auto-build-and-publish-emacs-configuration-as-a-website/rendered-config-result-page.png]]
+[[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/rendered-config-result-page.png]]
 
 Enjoy 🎉

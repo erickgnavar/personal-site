@@ -84,7 +84,7 @@ alice -> bob: What does it mean\nto be well-adjusted?
 bob -> alice: The ability to play bridge or\ngolf as if they were games.
 #+end_src
 
-[[file:/images/blog/add-d2-support-to-hugo/render-post-result.png]]
+[[file:/images/posts/add-d2-support-to-hugo/render-post-result.png]]
 
 ** Custom code block render hook
 

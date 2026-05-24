@@ -202,13 +202,13 @@ When we enter to http://localhost:8091/ we can see:
 
 We can see the status of the running tests:
 
-[[file:/images/blog/getting-started-with-tsung/status-page.png]]
+[[file:/images/posts/getting-started-with-tsung/status-page.png]]
 
 *** Reports page
 
 We can see stats about the connection time, response times, OS resources usage and so on.
 
-[[file:/images/blog/getting-started-with-tsung/reports-page.png]]
+[[file:/images/posts/getting-started-with-tsung/reports-page.png]]
 
 *** Charts page
 
@@ -220,7 +220,7 @@ This could be the most interesting one, we can see pretty good charts about the 
 - Server OS monitoring
 - HTTP return code Status (rate)
 
-[[file:/images/blog/getting-started-with-tsung/charts-page.png]]
+[[file:/images/posts/getting-started-with-tsung/charts-page.png]]
 
 ** Static reporting
 
@@ -239,7 +239,7 @@ This will generate a few new folders inside of it:
 
 For example in this chart we can see the numbers of users vs the time, and as we can see the quantity was increased after 10 minutes, just like we defined in the config file.
 
-[[file:/images/blog/getting-started-with-tsung/users-arrival-chart.png]]
+[[file:/images/posts/getting-started-with-tsung/users-arrival-chart.png]]
 
 * Final thoughts
 
