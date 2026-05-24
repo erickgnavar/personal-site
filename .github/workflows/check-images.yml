@@ -1,0 +1,10 @@
+name: Check image references
+
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/check-images.sh
