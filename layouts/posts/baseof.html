@@ -1,5 +1,6 @@
+<!-- djlint:off H016,H030,H031 -->
 <!DOCTYPE html>
-<html lang="{{ $.Site.Language.Locale }}">
+<html lang="{{ $.Site.LanguageCode }}">
   {{- partial "head.html" . -}}
   <body a="{{ $.Site.Params.theme_config.appearance | default "auto" }}">
     <main class="page-content" aria-label="Content">
@@ -11,3 +12,4 @@
     </main>
   </body>
 </html>
+<!-- djlint:on -->
