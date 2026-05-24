@@ -3,6 +3,8 @@ title: "Creating an emacs formatter the easy way"
 date: 2019-05-20T19:44:35-07:00
 tags: [ emacs, emacs lisp ]
 type: posts
+aliases:
+  - /blog/creating-an-emacs-formatter-the-easy-way/
 ---
 
 Some weeks ago I discovered a really nice package for emacs called [[https://github.com/purcell/reformatter.el][reformatter.el]]. This package allows to define reformat functions in a easy way.

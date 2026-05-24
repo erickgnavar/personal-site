@@ -3,6 +3,8 @@ title: "Testing an API with emacs and restclient"
 date: 2019-10-27T16:53:00-06:00
 tags: [ emacs, api, http ]
 type: posts
+aliases:
+  - /blog/testing-an-api-with-emacs-and-restclient/
 ---
 
 When we're developing some application we frequently interact with APIs.

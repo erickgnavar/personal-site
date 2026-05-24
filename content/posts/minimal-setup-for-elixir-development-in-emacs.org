@@ -3,6 +3,8 @@ title: "Minimal Setup for Elixir development in Emacs"
 date: 2019-10-19T10:00:15-05:00
 tags: [ emacs, elixir ]
 type: posts
+aliases:
+  - /blog/minimal-setup-for-elixir-development-in-emacs/
 ---
 
 I've been working professionally with Elixir for 7 months, obviously using emacs as my daily editor. In this post we'll see some packages that could be useful for Elixir development.

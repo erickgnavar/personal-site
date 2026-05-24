@@ -3,6 +3,8 @@ title: "Save and Restore Window Configuration in Emacs"
 date: 2018-12-25T10:18:56-05:00
 tags: [ emacs, emacs lisp ]
 type: posts
+aliases:
+  - /blog/save-and-restore-window-configuration-in-emacs/
 ---
 
 When we are using =emacs= sometimes we often open many buffers in different windows at the same time, for example we can have a buffer for a opened file, another for seeing test results and so on.

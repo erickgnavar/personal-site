@@ -4,6 +4,7 @@ date: 2024-06-05T08:19:05-06:00
 type: posts
 tags: [emacs, mermaid]
 aliases:
+  - /blog/mermaid-preview-using-xwidget-browser/
   - /blog/mermaid-preview-using-wxwidget-browser
 ---
 

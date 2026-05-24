@@ -3,6 +3,8 @@ title: "Simple OBS Client in Elixir"
 date: 2024-05-12T13:49:50-06:00
 type: posts
 tags: [ "elixir", "obs", "websocket" ]
+aliases:
+  - /blog/simple-obs-client-in-elixir/
 ---
 
 Let's write a simple module to control OBS using websockets.

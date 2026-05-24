@@ -3,6 +3,8 @@ title: "Auto build and publish emacs org configuration as a website"
 date: 2021-04-04T10:32:08-06:00
 type: posts
 tags: [ emacs, "org-mode", "github-actions", "github-pages" ]
+aliases:
+  - /blog/auto-build-and-publish-emacs-org-configuration-as-a-website/
 ---
 
 Having our emacs configuration in an =org= file is great, it allow us to have it more organized and easy to read, but =org= files have more features and one of them is the ability to be exported to different formats like HTML, PDF, markdown and so on. So what if we export our emacs configuration to HTML and then publish it in a website? 🤯

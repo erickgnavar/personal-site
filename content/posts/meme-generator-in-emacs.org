@@ -4,6 +4,7 @@ date: 2020-10-03T22:27:26-05:00
 type: posts
 tags: [ emacs, emacs lisp, til ]
 aliases:
+  - /blog/meme-generator-in-emacs/
   - /til/meme-generator-in-emacs/
 ---
 

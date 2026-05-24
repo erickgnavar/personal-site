@@ -3,6 +3,8 @@ title: "Telegram bot to preview social media content"
 date: 2025-02-03T17:27:15-06:00
 type: posts
 tags: [ telegram, bot ]
+aliases:
+  - /blog/telegram-bot-to-preview-social-media-content/
 ---
 
 I usually share some links of Twitter(it is known as X now but I still call it Twitter) in Telegram, but for some reason the previews doesn't work well most of the times.

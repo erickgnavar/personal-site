@@ -3,6 +3,8 @@ title: "Things I wish I knew when I started in elixir development"
 date: 2021-03-01T08:54:15-06:00
 tags: [ "elixir", "erlang" ]
 type: posts
+aliases:
+  - /blog/things-i-wish-i-knew-when-i-started-in-elixir-development/
 ---
 
 These are some things I commonly use in my elixir development workflow that might be interesting for someone.

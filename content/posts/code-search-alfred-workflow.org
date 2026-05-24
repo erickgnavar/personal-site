@@ -3,6 +3,8 @@ title: Code search Alfred workflow
 date: 2023-09-21T08:58:16-06:00
 type: posts
 tags: [ alfred, macOS, GitHub ]
+aliases:
+  - /blog/code-search-alfred-workflow/
 ---
 
 Code search is a useful tool to search for examples about some function, class, etc. We're going to create a Alfred workflow to easily search into [[https://github.com/features/code-search/][GitHub Code search]] and [[https://sourcegraph.com/search][SourceGraph]]

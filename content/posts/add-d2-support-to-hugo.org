@@ -3,6 +3,8 @@ title: "Add D2 support to Hugo"
 date: 2024-06-13T06:49:06-06:00
 type: posts
 tags: [ hugo, d2 ]
+aliases:
+  - /blog/add-d2-support-to-hugo/
 ---
 
 [[https://d2lang.com][D2]] is declarative language to generate diagrams, it's like mermaid on steroids, it has a ~cli~ so it's easy to use.

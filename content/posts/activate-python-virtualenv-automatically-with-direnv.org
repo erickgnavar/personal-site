@@ -3,6 +3,8 @@ title: "Activate python virtualenv automatically with direnv"
 date: 2021-02-28T23:06:47-06:00
 type: posts
 tags: [ python, terminal, direnv ]
+aliases:
+  - /blog/activate-python-virtualenv-automatically-with-direnv/
 ---
 
 [[https://direnv.net][direnv]] is a tool to set up automatically environment variables as soon as we enter in a directory that contains a =.envrc= file. We can use this feature to activate our virtualenvs as well.

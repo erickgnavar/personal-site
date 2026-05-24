@@ -3,6 +3,8 @@ title: "Moving to Emacs Tree Sitter Modes"
 date: 2024-05-21T22:30:15-06:00
 type: posts
 tags: [ tree-sitter, emacs ]
+aliases:
+  - /blog/moving-to-emacs-tree-sitter-modes/
 ---
 
 I'm currently using emacs 30 and this version has support for more languages using the new ~ts-modes~, I've been using [[https://github.com/emacs-tree-sitter/elisp-tree-sitter/][emacs-tree-sitter]] package since Emacs added dynamic modules feature.

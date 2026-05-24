@@ -3,6 +3,8 @@ title: "Creating helper commands for k8s using fzf"
 date: 2020-05-17T00:13:20-05:00
 type: posts
 tags: [ k8s, shell ]
+aliases:
+  - /blog/creating-helper-commands-for-k8s-using-fzf/
 ---
 
 Kubernetes cli tool =kubectl= is pretty useful but when I need to execute some tasks many times during a work day it could be too verbose. So I wrote some bash functions to handle a few common tasks I use often.

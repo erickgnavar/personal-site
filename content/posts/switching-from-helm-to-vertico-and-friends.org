@@ -3,6 +3,8 @@ title: "Switching from helm to vertico and friends"
 date: 2023-08-31T23:23:06-06:00
 type: posts
 tags: [ emacs, helm, vertico ]
+aliases:
+  - /blog/switching-from-helm-to-vertico-and-friends/
 ---
 
 I've been using ~helm~ for many years, since I started to use ~emacs~ itself. It was great because it is a "all in one" tool, very convenient when starting in ~emacs~ world.

@@ -3,6 +3,8 @@ title: "Easy deploy of docker based projects"
 date: 2021-04-02T21:57:24-06:00
 type: posts
 tags: [ docker, django, caddy, deployment, phoenix ]
+aliases:
+  - /blog/easy-deploy-of-docker-based-projects/
 ---
 
 I have a personal server where I run some projects, some of them written in python, elixir and other technologies so having to deal with specific installation of any of these technologies is not an ideal workflow, to fix this I use docker and all of them are deployed using =docker-compose=, they're connected to a single PostgreSQL server and they're behind the same web server.

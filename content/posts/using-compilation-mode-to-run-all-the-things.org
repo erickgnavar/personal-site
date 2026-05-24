@@ -3,6 +3,8 @@ title: "Using compilation mode to run all the things"
 date: 2021-04-01T10:44:22-06:00
 type: posts
 tags: [ "emacs", "emacs lisp" ]
+aliases:
+  - /blog/using-compilation-mode-to-run-all-the-things/
 ---
 
 Compilation mode is a major mode that allow us to run a command and see its output result in a special buffer, this resulting buffer show the errors and allow us to navigate through them, you can check the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Compilation-Mode.html][documentation]] for more details.

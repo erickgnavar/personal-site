@@ -3,6 +3,8 @@ title: "Select term at point using tree sitter in emacs"
 date: 2022-11-06T01:26:36-06:00
 type: posts
 tags: [ tree sitter, emacs ]
+aliases:
+  - /blog/select-term-at-point-using-tree-sitter-in-emacs/
 ---
 
 Some days ago I saw a tweet(detail below) that show an interesting feature, a way to select terms using the mouse. After seeing that I thought it will be easy to implement using [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]].

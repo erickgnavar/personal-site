@@ -3,6 +3,8 @@ title: Memes fuzzy finder using Alfred, fzf and jq
 date: 2022-06-18T22:10:56-05:00
 type: posts
 tags: [ alfred, macOS, fzf, jq ]
+aliases:
+  - /blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/
 ---
 
 Let's create a Alfred workflow to search for memes in a folder(our collection) and put that image in the clipboard so we can user it wherever we need it. Yes, it sounds useless but it was fun to made.
