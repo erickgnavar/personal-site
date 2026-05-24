@@ -1,0 +1,8 @@
+---
+aliases:
+  - /about/
+---
+
+Software and infrastructure engineer. I work with Elixir, Python, Go, Bash and other
+languages/stacks, spend too much time in Emacs, run a homelab, and like messing around with
+computers in general. Into functional programming and building things that (usually) work.

@@ -1,0 +1,14 @@
+{{ if site.Params.theme_config.isShowFooter }}
+<footer class="site-footer">
+  <p>
+    <a href="https://twitter.com/erickgnavar">Twitter</a> |
+    <a href="https://github.com/erickgnavar">GitHub</a> |
+    <a href="https://gitlab.com/erickgnavar">GitLab</a> |
+    <a href="https://linkedin.com/in/erickgnavar">LinkedIn</a> |
+    <a href="https://twitch.com/erickgnavar">Twitch</a>
+  </p>
+  <p>&copy; {{ now.Format "2006" }} Erick Navarro</p>
+</footer>
+{{ end }}
+{{ partial "plausible.html" . }}
+{{ partial "buymeacoffee.html" . }}

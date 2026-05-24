@@ -9,7 +9,7 @@ aliases:
 
 Some days ago I saw a tweet(detail below) that show an interesting feature, a way to select terms using the mouse. After seeing that I thought it will be easy to implement using [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]].
 
-{{< tweet user="disconcision" id="1587156531203678208" >}}
+{{< x user="disconcision" id="1587156531203678208" >}}
 
 To be able to implement this we just need [[https://github.com/emacs-tree-sitter/elisp-tree-sitter][tree-sitter.el]] which will allow us to select terms using grammars.
 
