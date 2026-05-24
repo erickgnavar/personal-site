@@ -17,5 +17,5 @@ title = "my dotfiles"
 url = "https://github.com/erickgnavar/dotfiles"
 
 [[entries]]
-title = "contact me"
-url = "mailto:erick@navarro.io?subject=Hello"
+title = "contact"
+url = "contact"

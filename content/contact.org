@@ -1,0 +1,19 @@
+---
+title: "Contact"
+---
+
+* Email
+
+[[mailto:erick@navarro.io][erick@navarro.io]]
+
+* Social
+
+- [[https://twitter.com/erickgnavar][Twitter]]
+- [[https://github.com/erickgnavar][GitHub]]
+- [[https://gitlab.com/erickgnavar][GitLab]]
+- [[https://linkedin.com/in/erickgnavar][LinkedIn]]
+- [[https://twitch.com/erickgnavar][Twitch]]
+
+* Consultancy (Spanish)
+
+If you want to work together, you can [[https://tidycal.com/erickgnavar][book a call]] or just send me an email.
