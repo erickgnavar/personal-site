@@ -12,6 +12,16 @@
     {{ $.Site.Title }}
     {{ end }}
   </title>
+  {{ $desc := cond .IsHome $.Site.Params.description (default .Summary .Description) }}
+  {{ $title := cond .IsHome $.Site.Title .Title }}
+  <meta property="og:title" content="{{ $title }}" />
+  <meta property="og:description" content="{{ $desc }}" />
+  <meta property="og:type"
+        content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+  <meta property="og:url" content="{{ .Permalink }}" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{{ $title }}" />
+  <meta name="twitter:description" content="{{ $desc }}" />
   <link rel="shortcut icon"
         type="image/x-icon"
         href="{{ $.Site.Params.favicon | relURL }}" />
