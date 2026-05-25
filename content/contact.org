@@ -8,6 +8,7 @@ title: "Contact"
 
 * Social
 
+- [[https://mastodon.social/@erickgnavar][Mastodon]]
 - [[https://twitter.com/erickgnavar][Twitter]]
 - [[https://github.com/erickgnavar][GitHub]]
 - [[https://gitlab.com/erickgnavar][GitLab]]
