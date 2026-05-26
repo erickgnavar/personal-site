@@ -36,3 +36,26 @@
   text-align: center;
   padding-top: 1rem;
 }
+
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font: inherit;
+  font-size: 0.75em;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 0.2em 0.6em;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.15s;
+}
+
+pre:hover .copy-btn {
+  opacity: 0.8;
+}
+
+.copy-btn:hover {
+  opacity: 1 !important;
+}
