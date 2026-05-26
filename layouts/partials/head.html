@@ -22,6 +22,8 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="{{ $title }}" />
   <meta name="twitter:description" content="{{ $desc }}" />
+  <meta property="og:image" content="{{ $.Site.Params.favicon }}" />
+  <meta name="twitter:image" content="{{ $.Site.Params.favicon }}" />
   <link rel="shortcut icon"
         type="image/x-icon"
         href="{{ $.Site.Params.favicon | relURL }}" />
