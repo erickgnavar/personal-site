@@ -59,3 +59,22 @@ pre:hover .copy-btn {
 .copy-btn:hover {
   opacity: 1 !important;
 }
+
+.heading-anchor {
+  position: absolute;
+  left: -1.2em;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  font-weight: normal;
+}
+
+.heading-anchor:hover {
+  opacity: 1;
+}
+
+article h2:hover .heading-anchor,
+article h3:hover .heading-anchor,
+article h4:hover .heading-anchor {
+  opacity: 0.5;
+}

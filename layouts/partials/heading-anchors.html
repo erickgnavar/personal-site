@@ -1,0 +1,23 @@
+<script>
+(() => {
+  document.querySelectorAll('article h1, article h2, article h3, article h4, article h5, article h6').forEach(h => {
+    if (!h.id) return;
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.className = 'heading-anchor';
+    a.textContent = '#';
+    a.setAttribute('aria-label', 'Copy link to this section');
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const url = location.origin + location.pathname + '#' + h.id;
+      navigator.clipboard.writeText(url);
+      history.replaceState(null, '', '#' + h.id);
+      const orig = a.textContent;
+      a.textContent = '✓';
+      setTimeout(() => { a.textContent = orig; }, 2000);
+    });
+    h.style.position = 'relative';
+    h.appendChild(a);
+  });
+})();
+</script>
