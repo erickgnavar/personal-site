@@ -1,7 +1,6 @@
 baseURL = "https://erick.navarro.io"
 title = "Erick Navarro"
 theme = "hugo-theme-nostyleplease"
-paginate = 20
 
 [markup]
   [markup.highlight]
