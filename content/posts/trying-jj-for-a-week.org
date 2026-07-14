@@ -1,0 +1,194 @@
+---
+title: "Trying Jujutsu (jj) for a Week"
+date: 2026-07-14T06:49:06-06:00
+type: posts
+tags: [ jj, git, vcs ]
+---
+
+I've been using [[https://www.jj-vcs.dev/latest/][jujutsu]] at work for a week now, it's been a good experience so far. I wanted to try
+it basically because:
+
+- I wanted to force myself to have a clean state in my repos, I usually left many files that won't
+  be committed
+- I don't want to name branches for PRs anymore, when making small changes, fixes, etc most of the
+  time nobody sees the branch name in the PR so why bother to give it a proper name
+- I want to switch between changes in an easy way, I was using ~git stash~ + switching branches for
+  this
+
+** A few concepts to keep in mind
+
+- ~jj~ doesn't have a ~stage~ area, every ~change~ is itself already a ~commit~
+- ~@~ references current change, and ~@-~ references current change's parent
+- ~jj undo~ will undo any action made by ~jj~, it's really helpful
+- we don't have branches in ~jj~, we use ~bookmarks~
+- we can use ~jj~ with any ~git~ project and this won't change how other work with the repository,
+  we just run ~jj git init --colocate~ and that is just a local change
+
+** Workflows
+
+So let's define some common workflows I needed to fulfill with ~jj~
+
+#+begin_quote
+I don't use ~git~ from the terminal in my regular workflow, I use [[https://magit.vc][magit]] (so much faster) from Emacs
+so I don't type all of the below ~git~ commands but I describe the process to clarify the idea
+#+end_quote
+
+*** Make a quick fix
+
+I'm working on some feature and then someone asks me to make a change in the same repo I'm working
+on, what I was doing before:
+
+#+begin_src shell
+git stash
+git fetch origin
+git checkout main
+git merge origin/main # to start from a fresh main branch
+# do the changes
+git checkout -b a-branch-name-no-one-will-read
+git commit -m "some message"
+git push
+# go back to work, go to previous branch
+git checkout original-branch
+git stash pop
+#+end_src
+
+Now with ~jj~
+
+#+begin_src shell
+jj git fetch
+jj new main@origin
+# do changes
+jj describe -m "some message"
+jj git push -c @
+# go back to work, run jj log and search for the change-id you were at
+jj edit {change-id}
+#+end_src
+
+
+#+begin_quote
+~jj~ by default will create a branch with a name ~push-{change-id}~, for example
+~push-zxoytvwpvmxp~, we can change it by creating manually a ~bookmark~ (equivalent to a ~git~
+branch) but it's not necessary
+#+end_quote
+
+*** Show you current changes
+
+This will see all the current changes using regular ~diff~ format
+
+#+begin_src shell
+jj show --git
+#+end_src
+
+*** Review a Pull Request
+
+When I need to review a PR I need to test it locally
+
+Before
+
+#+begin_src shell
+git stash
+git fetch origin
+git checkout -b pr_branch_name origin/pr_branch_name
+# review it
+git checkout -
+git stash pop
+#+end_src
+
+Now with ~jj~:
+
+#+begin_src shell
+jj git fetch
+jj new pr_branch_name@origin
+# review it
+jj undo
+# now I'm where I was before
+#+end_src
+
+*** Building a feature
+
+There isn't much change here, in the ~git~ side:
+
+#+begin_src shell
+git fetch origin
+git merge origin/main
+git checkout -b a-branch-name
+git add -p # because we review what we're staging, we are not savages
+git commit -m "this is a feature"
+git push
+#+end_src
+
+and with ~jj~:
+
+#+begin_src shell
+jj git fetch
+jj new main@origin
+# do your changes
+jj describe -m "this is a feature"
+jj git push -c @
+#+end_src
+
+#+begin_quote
+One difference here is that in ~jj~ we are "forced" to commit all of the work we've done at once, we
+use ~jj commit --interactive~ or ~jj split~ to have something like ~git add -p~ but I'm not used to
+that yet
+#+end_quote
+
+*** Rebasing an existing pull request
+
+Considering we are at that PR branch already and we need to update it with latest changes from
+~main~ branch and push it updated
+
+#+begin_src shell
+git fetch origin
+git rebase origin/main
+# we changed history so we need to push force
+git push -f origin your-branch
+#+end_src
+
+In the case of ~jj~ we need to make one step extra because ~jj~ bookmarks doesn't follow changes by
+default, once we made the rebase we need to tell ~jj~ to move bookmark to updated change.
+
+#+begin_src shell
+jj git fetch
+jj rebase -d main@origin
+jj bookmark set your-branch -r @
+# by default jj will make a push force
+jj git push
+#+end_src
+
+** Required stuff for work
+
+In =~/.config/jj/config.toml=:
+
+Using company email address when committing
+
+#+begin_src ini
+[[--scope]]
+--when.repositories = ["~/src/my-company/"]
+
+[--scope.user]
+email = "erick.navarro@mycompany.com"
+#+end_src
+
+Signing commits
+
+#+begin_src ini
+[signing]
+behavior = "own"
+backend = "ssh"
+key = "~/.ssh/id_ed25519.pub"
+#+end_src
+
+** What about Emacs, are we going back to the terminal for version control?
+
+Yes and no, first I need to get used to how ~jj~ works and doing it in the terminal is the best
+option, by now I'm using ~jj-mode.el~ but just to switch between changes and edit description, all
+of the rest commands are done in the terminal(inside Emacs obviously 😎)
+
+** Conclusion
+
+Will I change to ~jj~ and don't use ~git~ anymore?
+
+Nope, ~jj~ gives me more flexibility in projects where I need to make changes quickly and where I
+collaborate with others, for personal projects where I'm mostly the only contributor and there is no
+rush in making changes I'll stick to ~git~ (for now? 🤔)
