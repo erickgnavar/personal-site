@@ -23,9 +23,9 @@ In the following example we're compiling this blog using hugo binary:
 
 ** From code
 
-=compile= is a emacs-lisp function so we call it from our code, we just need to take care about the =default-directory= when we call it, for example if we call it from =lib/hello.ex= buffer, =default-directory= will be =lib= and in some cases we want to use our project root, or a different directory, to run our command.
+=compile= is an Emacs Lisp function so we call it from our code, we just need to take care of the =default-directory= when we call it, for example if we call it from =lib/hello.ex= buffer, =default-directory= will be =lib= and in some cases we want to use our project root, or a different directory, to run our command.
 
-To fix this we need to setup =default-directory= before we call =compile=, for example let's build a custom function to run =hlint= in our entire project and then show its results in a =compilation= buffer:
+To fix this we need to set up =default-directory= before we call =compile=, for example let's build a custom function to run =hlint= in our entire project and then show its results in a =compilation= buffer:
 
 #+begin_src emacs-lisp
 (defun my/run-hlint ()
@@ -39,7 +39,8 @@ In this case we're setting up =default-directory= with our project root (using p
 
 * Some tweaks
 
-These modifications to default behaviour of =compilation-mode= should be made after the mode was loaded so we need to use [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Hooks-for-Loading.html][with-eval-after-load]] otherwise these changes won't be applied correctly.
+These modifications to the default behaviour of =compilation-mode= should be made after the mode was
+loaded so we need to use [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Hooks-for-Loading.html][with-eval-after-load]] otherwise these changes won't be applied correctly.
 
 ** Evil-mode
 
@@ -83,7 +84,7 @@ This was taken from this [[https://stackoverflow.com/questions/3072648/cucumbers
 
 ** Re run compilation from another buffer
 
-When we're making changes in our code we want to re-run our compilation process right after we save the changes but to do this we have to move to the compilation buffer to be able to re-run the compilation, a better approach to do this could be just call =recompile= by using a key binding, I use =evil-leader= to make this:
+When we're making changes in our code we want to re-run our compilation process right after we save the changes but to do this we have to move to the compilation buffer to be able to re-run the compilation, a better approach to do this could be to just call =recompile= by using a key binding, I use =evil-leader= to make this:
 
 #+begin_src emacs-lisp
 (evil-leader/set-key "R" 'recompile)

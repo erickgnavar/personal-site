@@ -7,7 +7,7 @@ aliases:
   - /blog/add-d2-support-to-hugo/
 ---
 
-[[https://d2lang.com][D2]] is declarative language to generate diagrams, it's like mermaid on steroids, it has a ~cli~ so it's easy to use.
+[[https://d2lang.com][D2]] is a declarative language to generate diagrams, it's like mermaid on steroids, it has a ~cli~ so it's easy to use.
 
 Hugo doesn't support it at the moment of writing this, there is an open [[https://github.com/gohugoio/hugo/issues/10579][issue]] where the conversation is being done.
 
@@ -18,7 +18,7 @@ So in the meantime official support is added we're going to make our own integra
 
 ** A simple HTTP server in ~go~
 
-This server only uses standard library and do the follow:
+This server only uses the standard library and does the following:
 
 - receive ~d2~ code in a ~POST~ payload.
 - call ~d2~ cli and get its ~std output~.
@@ -75,7 +75,7 @@ func main() {
 We can also use ~d2~ as a package but using it as a CLI is less code.
 #+end_quote
 
-Now if we send a request the following request:
+Now if we send the following request:
 
 #+begin_src restclient
 POST http://localhost:8080/render
@@ -129,6 +129,6 @@ The render will only be done on build time so we don't need to have the render s
 
 ** Conclusion
 
-~Hugo~ allows us to add custom features to our site and ~go~ allows us to accomplish task using on only standard library.
+~Hugo~ allows us to add custom features to our site and ~Go~ allows us to accomplish tasks using only the standard library.
 
 Enjoy! 🎉

@@ -9,7 +9,7 @@ aliases:
 
 I have a personal server where I run some projects, some of them written in python, elixir and other technologies so having to deal with specific installation of any of these technologies is not an ideal workflow, to fix this I use docker and all of them are deployed using =docker-compose=, they're connected to a single PostgreSQL server and they're behind the same web server.
 
-Running all of these projects in this way it's easier to maintain and in case something happens with the server I can re deploy everything in a easy way. Let's take a look to these tools and how they work together.
+Running all of these projects in this way it's easier to maintain and in case something happens with the server I can re deploy everything in an easy way. Let's take a look to these tools and how they work together.
 
 Let's assume we have the following requirements:
 
@@ -21,7 +21,7 @@ Let's assume we have the following requirements:
 
 To solve this we're going to:
 
-- Set up a linux server
+- Set up a Linux server
 - Install PostgreSQL
 - Configure a web server which will handle incoming traffic and SSL termination
 - Run our applications inside Docker containers
@@ -41,7 +41,7 @@ We first need a server which can run docker, most linux distros can be used for 
 
 Once you get a server it's recommended to make some basic configurations like updating packages, setup a firewall, etc. You can follow this Linode [[https://www.linode.com/docs/security/securing-your-server/][guide]] to secure your server.
 
-After that you need to install docker, to do that you can follow the [[https://docs.docker.com/engine/install/][official documentation]], this have specific instructions for you linux distribution.
+After that you need to install docker, to do that you can follow the [[https://docs.docker.com/engine/install/][official documentation]], this have specific instructions for your Linux distribution.
 
 Once we have =docker= and =docker-compose= installed we can follow this guide.
 
@@ -55,7 +55,7 @@ First let's install PostgreSQL with:
 sudo apt install postgresql-server
 #+end_src
 
-We need to login with =postgres= user so we can be able to enter to a =psql= session. We can do it with:
+We need to log in with the =postgres= user so we can enter a =psql= session. We can do it with:
 
 #+begin_src shell
 sudo su - postgres
@@ -111,17 +111,17 @@ phoenix.domain.com {
 }
 #+end_src
 
-Now when we reload our caddy server with =sudo systemctl reload caddy= it will get the SSL certificates and internally will check if they still valid, otherwise it will renew them.
+Now when we reload our caddy server with =sudo systemctl reload caddy= it will get the SSL certificates and internally will check if they are still valid, otherwise it will renew them.
 
 * Running our projects with docker-compose
 
-[[https://docs.docker.com/compose/][Docker compose]] is a tool that allow us to define different docker services in a easier way using a =yaml= file.
+[[https://docs.docker.com/compose/][Docker compose]] is a tool that allow us to define different docker services in an easier way using a =yaml= file.
 
 We're going to configure our two projects using =docker-compose= but we first need their docker images so let's build them.
 
 Let's clone our projects(both are in the same repository, just in different folders), build the images and then publish them on a registry.
 
-This can be made in a separate machine because once the images are pushed to a remote registry they can be downloaded in our server.
+This can be done on a separate machine because once the images are pushed to a remote registry they can be downloaded in our server.
 
 #+begin_src shell
 cd simple-django-project-with-docker
@@ -135,7 +135,7 @@ docker build -t registry.mycompany.com/phoenix:v1 .
 docker push registry.mycompany.com/phoenix:v1
 #+end_src
 
-You can use docker hub to push your images or use Gitlab registry in case you want free private images.
+You can use Docker Hub to push your images or use Gitlab registry in case you want free private images.
 
 ** Django application
 

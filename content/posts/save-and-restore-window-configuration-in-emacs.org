@@ -7,7 +7,7 @@ aliases:
   - /blog/save-and-restore-window-configuration-in-emacs/
 ---
 
-When we are using =emacs= sometimes we often open many buffers in different windows at the same time, for example we can have a buffer for a opened file, another for seeing test results and so on.
+When we are using =emacs= sometimes we often open many buffers in different windows at the same time, for example we can have a buffer for an opened file, another for seeing test results and so on.
 
 There are some tools to manage "sessions" but I wanted something simple and I also wanted to learn a little bit more of =elisp= so here is the result.
 

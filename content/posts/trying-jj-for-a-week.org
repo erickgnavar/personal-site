@@ -8,7 +8,7 @@ tags: [ jj, git, vcs ]
 I've been using [[https://www.jj-vcs.dev/latest/][jujutsu]] at work for a week now, it's been a good experience so far. I wanted to try
 it basically because:
 
-- I wanted to force myself to have a clean state in my repos, I usually left many files that won't
+- I wanted to force myself to have a clean state in my repos, I usually leave many files that won't
   be committed
 - I don't want to name branches for PRs anymore, when making small changes, fixes, etc most of the
   time nobody sees the branch name in the PR so why bother to give it a proper name
@@ -146,7 +146,7 @@ git push -f origin your-branch
 #+end_src
 
 In the case of ~jj~ we need to make one step extra because ~jj~ bookmarks doesn't follow changes by
-default, once we made the rebase we need to tell ~jj~ to move bookmark to updated change.
+default, once we've made the rebase we need to tell ~jj~ to move the bookmark to updated change.
 
 #+begin_src shell
 jj git fetch
@@ -187,7 +187,7 @@ of the rest commands are done in the terminal(inside Emacs obviously 😎)
 
 ** Conclusion
 
-Will I change to ~jj~ and don't use ~git~ anymore?
+Will I change to ~jj~ and not use ~git~ anymore?
 
 Nope, ~jj~ gives me more flexibility in projects where I need to make changes quickly and where I
 collaborate with others, for personal projects where I'm mostly the only contributor and there is no

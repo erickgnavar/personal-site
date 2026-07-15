@@ -7,7 +7,7 @@ aliases:
   - /blog/things-to-keep-in-mind-when-contributing-to-a-software-project/
 ---
 
-These are some are thoughts to keep in mind when we're contributing to a software project.
+These are some thoughts to keep in mind when we're contributing to a software project.
 
 * Know your tools
 
@@ -15,7 +15,7 @@ These are some are thoughts to keep in mind when we're contributing to a softwar
 
 ** Configure your name and email properly
 
-This helps to identify who make a change while we're browsing git log history. Don't use initials or nicknames, in a few months or maybe years eventually you will be looking at the git log and if you see something like this =Author: XYZ <xyz@some-random-provider.com>= you won't have a clue who make that change. We can setup this information with:
+This helps to identify who make a change while we're browsing git log history. Don't use initials or nicknames, in a few months or maybe years eventually you will be looking at the git log and if you see something like this =Author: XYZ <xyz@some-random-provider.com>= you won't have a clue who make that change. We can set up this information with:
 
 #+begin_src shell
 git config --global user.name "name and last name"
@@ -26,11 +26,11 @@ We can use it without =--global= to make these changes only in the current repos
 
 ** Commits should have a title and a body
 
-A easy to remember "rule" could be "Put what you did in the title and why you did it in the body". Memory is fragile and it could sound useless now but in a few months when you'll be looking at the log and see a commit and wanted to know why some change was made and the commit message just says "Fix some error" you probably will get angry with your past self.
+An easy-to-remember "rule" could be "Put what you did in the title and why you did it in the body". Memory is fragile and it could sound useless now but in a few months when you'll be looking at the log and see a commit and wanted to know why some change was made and the commit message just says "Fix some error" you probably will get angry with your past self.
 
 There is an article that explains this so much better than me, you could read it at https://chris.beams.io/posts/git-commit/
 
-An easy "hack" to force yourself to follow this is create a "commit template", it will be used when you make a commit and it will remind you about this rule. An example one could be:
+An easy "hack" to force yourself to follow this is to create a "commit template", it will be used when you make a commit and it will remind you about this rule. An example one could be:
 
 #+begin_src shell
 # If applied, this commit will...
@@ -54,12 +54,12 @@ After configuring this every time you make a commit the content of =~/.git_commi
 ** Review what your staging
 
 #+begin_quote
-Friends don't let friend use =git add .=
+Friends don't let friends use =git add .=
 #+end_quote
 
-The tool you use to stage changes and then commit should allow you to stage chunks of code one by one. This way you can review what are you adding. You don't want to commit those debug messages or commented code that you were using while your working on the project. Or even worse you definitively don't want to commit credentials files.
+The tool you use to stage changes and then commit should allow you to stage chunks of code one by one. This way you can review what you are adding. You don't want to commit those debug messages or commented code that you were using while you're working on the project. Or even worse you definitely don't want to commit credentials files.
 
-Also if you like to use =git= from the terminal, you can use =git add -p= to use an interactive mode, this will go through all the unstaged changes and will ask you one by one if you want to add them.
+Also, if you like to use =git= from the terminal, you can use =git add -p= to use an interactive mode, this will go through all the unstaged changes and will ask you one by one if you want to add them.
 
 * Conventions and consistency
 
@@ -71,15 +71,15 @@ OK you're done with a feature/fix/whatever your were working on. It's time to su
 
 - Make sure your changes are in sync with the latest changes in =upstream=. Maybe you're been working on something for a few days but some new changes were made to the project since the last sync.
 - Make sure you ran the whole test suite, run checkers and others pre-commit workflow that your project have.
-- Check the commits you've made. Maybe you can clean a little bit the log, remove some =WIP= commits or improving some messages.
+- Check the commits you've made. Maybe you can clean the log a little bit, remove some =WIP= commits or improve some messages.
 
-After you submit the pull request *be your first reviewer* before asking for more reviews. Once the pull request is created go to the pull request page on Github/Gitlab/etc and make a last check of your changes. Then assign the reviewers.
+After you submit the pull request *be your first reviewer* before asking for more reviews. Once the pull request is created go to the pull request page on GitHub/GitLab/etc and make a last check of your changes. Then assign the reviewers.
 
 Use tags, this way you are adding extra information that will help to understand and categorize the pull request, by looking at the tags we can know if the pull request is a fix, improvement, documentation, etc.
 
-Link your pull request with an issue. Github|Gitlab|etc have a nice feature to link pull requests with issues, for example if you're fixing a reported issue with number =10= add =fixes #10= in the pull request description and this will link it to that issue, this way we can have traceability about the work done and the issues reported.
+Link your pull request with an issue. GitHub|GitLab|etc have a nice feature to link pull requests with issues, for example if you're fixing a reported issue with number =10= add =fixes #10= in the pull request description and this will link it to that issue, this way we can have traceability about the work done and the issues reported.
 
-Improve pull request description, when you open a pull request Github|Gitlab|etc takes the first commit title and message and use them as title and description for the pull request so if we have made good commit messages most of the work is already done. Make review process a little easier by explaining what have you done. Maybe link another issues in different projects or bug reports related the changes you have made. Some extra context is always welcome :)
+Improve pull request description, when you open a pull request GitHub|GitLab|etc takes the first commit title and message and use them as title and description for the pull request so if we have made good commit messages most of the work is already done. Make review process a little easier by explaining what have you done. Maybe link another issues in different projects or bug reports related the changes you have made. Some extra context is always welcome :)
 
 * Code review
 
@@ -89,4 +89,4 @@ Don't take a comment as a fact that should be followed immediately, reviewers ca
 
 Don't make changes just to make reviewers happy and get your pull request merged. A code review is an excellent opportunity to get more knowledge about the project and to learn more about the code review process itself.
 
-If someone rewrite or delete some code that you wrote it isn't mean necessary is was "bad code" or something like that, maybe the requirement was different back then. Code has to evolve and at the end what matters the most is that the application does what is supposed to do. Also in some cases you'll be the one who is refactoring or fixing your own code after a while it was made ;)
+If someone rewrites or deletes some code that you wrote, it doesn't necessarily mean it was "bad code" or something like that — maybe the requirement was different back then. Code has to evolve, and at the end what matters most is that the application does what it is supposed to do. Also, in some cases you'll be the one refactoring or fixing your own code a while after it was written ;)

@@ -12,7 +12,7 @@ aliases:
 
 * Installation
 
-This package, at the time of writing this, is not available on melpa so we have to install it manually or using [[https://github.com/raxod502/straight.el][straight.el]] or [[https://github.com/quelpa/quelpa][quelpa]], because I'm using =straight.el= for my config we'll use that.
+This package, at the time of writing this, is not available on MELPA so we have to install it manually or using [[https://github.com/raxod502/straight.el][straight.el]] or [[https://github.com/quelpa/quelpa][quelpa]], because I'm using =straight.el= for my config we'll use that.
 
 #+begin_src emacs-lisp
 (use-package imgur
@@ -54,7 +54,7 @@ Now we can run =M-x meme= and we can choose a base image:
 #+NAME: fig:pick-meme
 [[file:/images/posts/meme-generator-in-emacs/pick-meme.png]]
 
-And then we can and add some text to it, like the image below:
+And then we can add some text to it, like the image below:
 
 #+CAPTION: Adding text
 #+NAME: fig:adding-text

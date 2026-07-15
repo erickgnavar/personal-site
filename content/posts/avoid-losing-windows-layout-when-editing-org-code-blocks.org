@@ -15,7 +15,7 @@ In the image below we can see this behavior:
 #+NAME: fig:before-patch
 [[file:/images/avoid-losing-window-layout-when-editing-org-code-blocks/before.gif]]
 
-To solve this problem we can use a simple variable to store the current window configuration just before the source code edition buffer is opened and when it's closed we can restore the previous configuration just getting the value from the variable used before. We're defining two functions to accomplish this behavior, one to run before and one after we're done editing the source block.
+To solve this problem we can use a simple variable to store the current window configuration just before the source code edition buffer is opened and when it's closed we can restore the previous configuration by just getting the value from the variable used before. We're defining two functions to accomplish this behavior, one to run before and one after we're done editing the source block.
 
 #+begin_src emacs-lisp
 (defvar my/org-src-block-tmp-window-configuration nil)
@@ -34,7 +34,7 @@ Now we need to "attach" these two functions to the default behavior of org-mode,
 The two functions that we need to advice are:
 
 - =org-edit-special=: this function is called when we press =C-c C-'= and allow us to edit source block in a dedicated buffer.
-- =org-edit-src-exit=: this function is called when we press =C-c C-'= from inside of the opened buffer, it closes the buffer and return us to the org buffer.
+- =org-edit-src-exit=: this function is called when we press =C-c C-'= from inside the opened buffer, it closes the buffer and return us to the org buffer.
 
 
  =my/org-edit-special= will run just before =org-edit-special= is called and =my/org-edit-src-exit= after =org-edit-src-exit= is called.

@@ -7,7 +7,7 @@ aliases:
   - /blog/memes-fuzzy-finder-using-alfred-fzf-and-jq/
 ---
 
-Let's create a Alfred workflow to search for memes in a folder(our collection) and put that image in the clipboard so we can user it wherever we need it. Yes, it sounds useless but it was fun to made.
+Let's create an Alfred workflow to search for memes in a folder(our collection) and put that image in the clipboard so we can user it wherever we need it. Yes, it sounds useless but it was fun to made.
 
 First we need to cover some things to understand how an Alfred workflow works. There are many types of elements to build a workflow, this time we're going to use 2 specific elements:
 - ~script filter~: prepare a list of options that can be filtered along as we type
@@ -105,7 +105,7 @@ Now we have the script we need to copy it inside ~script filter~, the result sho
 
 [[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/list-filter-complete.png]]
 
-We can check it's working using the debug tool in Aflred and typing the keyword and a query term, for example: ~meme elmo~:
+We can check it's working using the debug tool in Alfred and typing the keyword and a query term, for example: ~meme elmo~:
 
 [[file:/images/posts/memes-fuzzy-finder-using-alfred-fzf-and-jq/script-filter-debug.png]]
 

@@ -7,11 +7,11 @@ aliases:
   - /blog/creating-helper-commands-for-k8s-using-fzf/
 ---
 
-Kubernetes cli tool =kubectl= is pretty useful but when I need to execute some tasks many times during a work day it could be too verbose. So I wrote some bash functions to handle a few common tasks I use often.
+Kubernetes CLI tool =kubectl= is pretty useful but when I need to execute some tasks many times during a work day it could be too verbose. So I wrote some Bash functions to handle a few common tasks I use often.
 
-I used the power of [[https://github.com/junegunn/fzf][fzf]] to create an interactive experience when I run any of these functions. Basically it pipes the output of a =kubectl= command, make some filtering using =sed= and =awk= and then build a final command which will execute what I want.
+I used the power of [[https://github.com/junegunn/fzf][fzf]] to create an interactive experience when I run any of these functions. Basically it pipes the output of a =kubectl= command, do some filtering using =sed= and =awk= and then build a final command which will execute what I want.
 
-The common behavior of these functions is first ask for a =namespace= and then ask for a specific =pod= to make some action over its.
+The common behavior of these functions is first ask for a =namespace= and then ask for a specific =pod= to make some action on it.
 
 We can see an example of how it works in the image below:
 
@@ -82,4 +82,4 @@ function k8s_change_context {
 }
 #+end_src
 
-These are some common tasks I need for a day of work but with the same logic we can build some other commands.
+These are some common tasks I need in a day of work but with the same logic we can build some other commands.

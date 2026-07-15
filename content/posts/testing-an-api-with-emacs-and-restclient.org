@@ -9,7 +9,7 @@ aliases:
 
 When we're developing some application we frequently interact with APIs.
 
-There are applications like postman, httpie, insomnia and so on to accomplish this task but having an external application only to test a few endpoints or even a complex API is a little overkill.
+There are applications like Postman, HTTPie, Insomnia and so on to accomplish this task but having an external application only to test a few endpoints or even a complex API is a little overkill.
 
 Using emacs and a great package called [[https://github.com/pashky/restclient.el][restclient.el]] we can have a very complete tool to handle API requests without leaving our favorite editor.
 
@@ -29,7 +29,7 @@ Now if we open a file with =.http= extension restclient will be enabled automati
 
 * Example api
 
-We'll be using a example API to test the features of restclient so I prepared a little API in flask with a few endpoints to allow us to check the features of restclient.
+We'll be using an example API to test the features of restclient so I prepared a little API in Flask with a few endpoints to allow us to check the features of restclient.
 
 This is the code of the application in case you are curious
 
@@ -69,7 +69,7 @@ def create_item():
         items.append(new_item)
         return make_response(jsonify({"data": new_item}), 201)
     else:
-        return make_response(jsonify({"error": "please provide credentiales"}), 401)
+        return make_response(jsonify({"error": "please provide credentials"}), 401)
 
 
 def authenticated(req):
@@ -85,7 +85,7 @@ Just run the following command and you'll have an API running on port =5000=.
 docker run -p 5000:5000 erickgnavar/restclient-api-example:0.1
 #+END_SRC
 
-Now we're ready to test out API using restclient.
+Now we're ready to test our API using restclient.
 
 * Usage
 
@@ -194,9 +194,9 @@ Result:
 
 ** Variables and dynamic content
 
-What happen if we need to pass some extra information to make an http request? In restclient we can have variables and we use them in the definition of the request. In this case we'll define a =password= variable which contains the required =Authorization= value to be able access to this endpoint. Also we can define the payload of the request, in this case a json object.
+What happens if we need to pass some extra information to make an HTTP request? In restclient we can have variables and we use them in the definition of the request. In this case we'll define a =password= variable which contains the required =Authorization= value to be able to access this endpoint. Also we can define the payload of the request, in this case a json object.
 
-First let's try a wrong password to see what happen.
+First let's try a wrong password to see what happens.
 
 #+BEGIN_SRC restclient
 :password = wrong-password
@@ -213,7 +213,7 @@ Result:
 
 #+BEGIN_SRC js
 {
-  "error": "please provide credentiales"
+  "error": "please provide credentials"
 }
 // POST http://localhost:5000/api/items
 // HTTP/1.0 401 UNAUTHORIZED
@@ -224,7 +224,7 @@ Result:
 // Request duration: 0.036553s
 #+END_SRC
 
-We received a 401 response because the credentiales we used are not correct. Now let's try it again but now with the correct credentials.
+We received a 401 response because the credentials we used are not correct. Now let's try it again but now with the correct credentials.
 
 #+BEGIN_SRC restclient
 :password = password
@@ -263,7 +263,7 @@ As we can see the request was made successfully. Variables in restclient are eva
 
 If we need to pass a request with its data to some friend who doesn't use emacs we can pass the request definition(it's just plain text after all) but we can also generate a =curl= command so it's going to be easy for anyone to test the request.
 
-We can use =C-c C-u= from within out request to generate a =curl= command. After we execute this keybinding the =curl= command will be copied to the clipboard.
+We can use =C-c C-u= from within our request to generate a =curl= command. After we execute this keybinding the =curl= command will be copied to the clipboard.
 
 If we use this in our previous example we'll get the following =curl= command:
 
@@ -283,7 +283,7 @@ This package use =helm= to present the available options and when we chose one t
 
 ** Formatting payload
 
-If we are using json as the request body we'll need to have it formatted in some way. We can use =json-mode= for accomplish this.
+If we are using json as the request body we'll need to have it formatted in some way. We can use =json-mode= to accomplish this.
 
 Now our installation code will be:
 
@@ -303,4 +303,4 @@ We're adding a new keybinding to =restclient-mode-map= so we can use =C-c C-f= t
 
 * Conclusion
 
-Having our requests defined in plain text allow us to use it even as documentation and we don't depend of some external app that use a custom format to store these requests. We can freely pass this =.http= file to anyone and they will be able to read it and understanding it without the need to install an application.
+Having our requests defined in plain text allow us to use it even as documentation and we don't depend on some external app that use a custom format to store these requests. We can freely pass this =.http= file to anyone and they will be able to read it and understand it without the need to install an application.

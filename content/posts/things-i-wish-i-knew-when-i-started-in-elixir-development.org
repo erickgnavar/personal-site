@@ -11,9 +11,9 @@ These are some things I commonly use in my elixir development workflow that migh
 
 * Managing multiple versions of elixir and erlang
 
-When you have to work in more than one project at time that could probably means you have to handle different elixir and erlang versions so installing the default version that your OS provides won't be helpful. Here is where =asdf= shines to solves this problem, =asdf= allow us to have different versions of elixir, erlang and other languages in the same machine so we can easily switch between them.
+When you have to work in more than one project at a time that could probably means you have to handle different elixir and erlang versions so installing the default version that your OS provides won't be helpful. Here is where =asdf= shines in solving this problem, =asdf= allow us to have different versions of elixir, erlang and other languages in the same machine so we can easily switch between them.
 
-In macOS you can install it with =brew install asdf= and then follow the instructions that the installer prints out to set up the =PATH=, more info in its Github page https://github.com/asdf-vm/asdf
+In macOS you can install it with =brew install asdf= and then follow the instructions that the installer prints out to set up the =PATH=, more info in its GitHub page https://github.com/asdf-vm/asdf
 
 Now we have =asdf= installed we need to install the plugins to handle =erlang= and =elixir=, we can install them with:
 
@@ -36,7 +36,7 @@ export ASDF_ERLANG_VERSION=22.3
 #+end_src
 
 #+begin_quote
-To handle environment variables in a easy way we can use [[https://direnv.net][direnv]], it allows to define environment variables in a file =.envrc= and it will loaded automatically as soon as we enter to out project folder.
+To handle environment variables in an easy way we can use [[https://direnv.net][direnv]], it allows you to define environment variables in a =.envrc= file and it will be loaded automatically as soon as we enter our project folder.
 #+end_quote
 
 ** File based config file
@@ -55,11 +55,11 @@ Because we have first to define the versions used in a project we can't just run
 - Define global versions of elixir and erlang using for example =asdf global elixir 1.9.0= and the same for erlang =asdf global erlang 22.3= and then we can execute =mix new my_app= normally
 - Define the versions just for the =mix new= command execution, for example =ASDF_ELIXIR_VERSION=1.9.0 ASDF_ERLANG_VERSION=22.3 mix new my_app=, this way we don't affect the global scope and then we can define these same versions inside the created project.
 
-I like the second one because I don't have to change the global version each time I want to create a new project and I can easily access to that command from bash history.
+I like the second one because I don't have to change the global version each time I want to create a new project and I can easily access that command from bash history.
 
 ** Notes about erlang compilation
 
-=asdf= uses =kerl= under the hood to handle erlang compilation and when we are installing a new version it will ask for a java installation 😕, to avoid this behaviour we can define the following environment variable:
+=asdf= uses =kerl= under the hood to handle erlang compilation and when we are installing a new version it will ask for a Java installation 😕, to avoid this behaviour we can define the following environment variable:
 
 #+begin_src shell
 export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
@@ -96,7 +96,7 @@ Then if you have the connection url in a variable called =DATABASE_URL=, using =
 
 ** Enable shell history
 
-A cool feature of elixir is =iex=, you can load modules, recompile them and so on, but when sometimes we execute "large" pieces of code or some cases that we're trying out to understand the code or something else and when we have to restart the session we lost all the history 😢, we can avoid this by adding a flag =-kernel shell_history enabled= in the environment variable =ERL_AFLAGS= before we start our =iex= session. I just put following code in my =.zshrc= to have it enabled for all my projects:
+A cool feature of elixir is =iex=, you can load modules, recompile them and so on, but when sometimes we execute "large" pieces of code or some cases that we're trying out to understand the code or something else and when we have to restart the session we lose all the history 😢, we can avoid this by adding a flag =-kernel shell_history enabled= in the environment variable =ERL_AFLAGS= before we start our =iex= session. I just put the following code in my =.zshrc= to have it enabled for all my projects:
 
 #+begin_src shell
 export ERL_AFLAGS="-kernel shell_history enabled"
@@ -104,7 +104,7 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 
 ** Preload aliases
 
-Another thing than could be annoying to deal with is aliasing a large module name, for example if we have =MyApp.Contexts.Authentication.User= and we are using this module pretty often it could be easier to have it already loaded when we start a iex session, we can make this by defining a =.iex.exs= file in the project root with the desired aliases, for example:
+Another thing than could be annoying to deal with is aliasing a large module name, for example if we have =MyApp.Contexts.Authentication.User= and we are using this module pretty often it could be easier to have it already loaded when we start an iex session, we can make this by defining a =.iex.exs= file in the project root with the desired aliases, for example:
 
 #+begin_src elixir
 alias MyApp.Contexts.Authentication.User
@@ -113,12 +113,12 @@ alias MyApp.Contexts.Authentication.User
 And now when we start a new =iex= session we will have that module aliased from the beginning so we can use =User.whatever= without a problem.
 
 #+begin_quote
-Keep in mind that even if we can make an alias(a module name is just an atom) when we starting a session using just =iex= we cannot access to its functions. We need to start our =iex= session using =iex -S mix=
+Keep in mind that even if we can make an alias(a module name is just an atom) when we start a session using just =iex= we cannot access its functions. We need to start our =iex= session using =iex -S mix=
 #+end_quote
 
 ** Recompiling modules
 
-Within a =iex= sessions we can recompile a module just writing =r module_name= and if the want to recompile the whole project we can execute =recompile=, this is useful when we are making some changes in the code and we need to test it right away with all the values that we already had defined. It's also called "REPL based development" and it's most used with lisp based programming languages but having =iex= in elixir we can use those nice features as well.
+Within an =iex= session we can recompile a module just writing =r module_name= and if the want to recompile the whole project we can execute =recompile=, this is useful when we are making some changes in the code and we need to test it right away with all the values that we already had defined. It's also called "REPL based development" and it's most used with Lisp-based programming languages but having =iex= in elixir we can use those nice features as well.
 
 * Mix tasks
 
@@ -138,7 +138,7 @@ end
 
 We have to name this file =foo.ex= and place it inside =lib= folder and now we can run =mix foo= and we'll get a =running...= message.
 
-I use this many times, actually I have some defined tasks in many projects than I reuse to debug some workflows.
+I use this many times, actually I have some defined tasks in many projects that I reuse to debug some workflows.
 
 #+begin_quote
 I know that we "should" be defining the cases that we are debugging in a test, run it and then try to fix the code and then run the tests again but this way works for me so I'm OK with that 🙃
@@ -146,9 +146,9 @@ I know that we "should" be defining the cases that we are debugging in a test, r
 
 * Working with local third party libraries
 
-In some cases we could found some weird behaviour, a bug of just want to know a little more deep about how a third party library works. In that case it could be difficult to setup a local version of a library that we use in our project.
+In some cases we could find some weird behaviour, a bug, or just want to know a little more deeply about how a third party library works. In that case it could be difficult to set up a local version of a library that we use in our project.
 
-I remember using just =pip install -e path_to_library= in python and just starting to changing the library code.
+I remember using just =pip install -e path_to_library= in Python and just starting to change the library code.
 
 In elixir when we want to install a local version of a library we can specify the path of it in the =mix.exs= file, for example:
 
@@ -179,7 +179,7 @@ defmodule MyApp.MixProject do
 end
 #+end_src
 
-In this case we're telling our project to install =ecto_sql= from the given =path=, this will work but just the first time because it will load and compile =ecto_sql= at the beginning and then when we're making some changes in the code placed in =ecto_sql_local_path= these changes won't be recompiled automatically because =mix= is only watching for changes inside our project. In this case we can force to recompile some modules by using for example =r Ecto.Migrator= from within an =iex= session but if we are modifying more modules it would be tedious to recompile manually every one of them, for this case we can define a =Recompiler= module that make this work for us, name it as you want, this will contains:
+In this case we're telling our project to install =ecto_sql= from the given =path=, this will work only the first time because it will load and compile =ecto_sql= at the beginning and then when we're making some changes in the code placed in =ecto_sql_local_path= these changes won't be recompiled automatically because =mix= is only watching for changes inside our project. In this case we can force recompilation of some modules by using for example =r Ecto.Migrator= from within an =iex= session but if we are modifying more modules it would be tedious to recompile manually every one of them, for this case we can define a =Recompiler= module that make this work for us, name it as you want, this will contains:
 
 #+begin_src elixir
 defmodule Recompiler do

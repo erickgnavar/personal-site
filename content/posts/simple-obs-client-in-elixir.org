@@ -16,7 +16,7 @@ Let's write a simple module to control OBS using websockets.
 
 ** Basic configuration
 
-First we need to install a websocket client, [[https://hex.pm/packages/fresh][fresh]] is a easy to use client that works on top on [[https://hex.pm/packages/mint][mint]].
+First we need to install a websocket client, [[https://hex.pm/packages/fresh][fresh]] is an easy-to-use client that works on top of [[https://hex.pm/packages/mint][mint]].
 
 Let's add the following code to our ~mix.exs~ file.
 
@@ -58,7 +58,7 @@ Now we need to start our client, we can do it manually or using ~application.ex~
 Here is where we define 2 things:
 
 - the location of the websocket server, if we are running ~OBS~ in the same machine we can use ~ws://localhost:4455~, this is the default address that ~OBS~ uses.
-- the "name" of the process that will be used later to send messages to. In this case is ~:obs_websocket_client~. The client is just an ~erlang~ process so we need some way to send messages to it.
+- the "name" of the process that will be used later to send messages to. In this case is ~:obs_websocket_client~. The client is just an Erlang process so we need some way to send messages to it.
 
 ** Controlling OBS
 

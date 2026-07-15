@@ -1,16 +1,16 @@
 ---
 title: "Setting Up Hugo on Netlify"
 date: 2018-09-24T10:45:05-05:00
-summary: "Hugo is a static site generator that just like another alternatives(Nicola, Jekyll, etc) allows to write in plain text and generate html, js, css files. Hugo is so much simpler to use because it's a simple binary file that allows to develop and prepare the site to be published."
+summary: "Hugo is a static site generator that, just like other alternatives (Nicola, Jekyll, etc), allows you to write in plain text and generate HTML, JS, and CSS files. Hugo is so much simpler to use because it's a simple binary file that allows you to develop and prepare the site to be published."
 tags: [ "org-mode", "hugo" ]
 type: posts
 aliases:
   - /blog/setting-up-hugo-on-netlify/
 ---
 
-[[http://gohugo.io][Hugo]] is a static site generator that just like another alternatives(Nicola, Jekyll, etc) allows to write in plain text and generate html, js, css files.
+[[http://gohugo.io][Hugo]] is a static site generator that, just like other alternatives (Nicola, Jekyll, etc), allows you to write in plain text and generate HTML, JS, and CSS files.
 
-Hugo is so much simpler to use because it's a simple binary file, called =hugo=, that allows to develop and prepare the site to be published. Some of its features are:
+Hugo is so much simpler to use because it's a simple binary file, called =hugo=, that allows you to develop and prepare the site to be published. Some of its features are:
 
 
 - Generate a new site
@@ -22,13 +22,13 @@ So let's start to build a site from scratch and publish it automatically using [
 
 ** Creating the new site
 
-First we'll need to install hugo. You need to install the single binary using the package manager you prefer. In mac OS you can install it using Homebrew with the following command:
+First we'll need to install hugo. You need to install the single binary using the package manager you prefer. In macOS you can install it using Homebrew with the following command:
 
 =brew install hugo=
 
 You can check the version with =hugo version=, at the time I'm writing this post the latest version available is =0.48=.
 
-Now we need to generate an new empty site so we'll use the command =hugo new site myblog=. Once the command finished you'll have a new folder called =myblog=
+Now we need to generate a new empty site so we'll use the command =hugo new site myblog=. Once the command finished you'll have a new folder called =myblog=
 
 The structure of the new folder should be:
 
@@ -53,7 +53,7 @@ languageCode = "en-us"
 title = "My New Hugo Site"
 #+END_SRC
 
-We have to change =baseURL= to =/= to avoid error with broken links(we'll see these possible errors later). So the result =config.toml= will be:
+We have to change =baseURL= to =/= to avoid errors with broken links(we'll see these possible errors later). So the result =config.toml= will be:
 
 #+BEGIN_SRC toml
 baseURL = "/"
@@ -70,7 +70,7 @@ For this example we'll use [[https://themes.gohugo.io/beautifulhugo/][Beautiful 
 We have 2 options to include the theme in the new site:
 
 - Clone the theme repository and add it to our folder. This will copy all the files inside our folder.
-- Use git sub modules to create a reference to the theme repository. This way we don't need to copy all the files.
+- Use git submodules to create a reference to the theme repository. This way we don't need to copy all the files.
 
 We'll use the second option this time.
 
@@ -102,7 +102,7 @@ theme = "beautifulhugo"
 
 To see the new site running before publish it we'll use the embedded development server. We run it with =hugo server -D -p 9000=.
 
-After that we'll an output similar to this:
+After that we'll see an output similar to this:
 
 #+BEGIN_SRC
                    | EN
@@ -127,7 +127,7 @@ Press Ctrl+C to stop
 
 Now we can open the browser and enter [[http://localhost:9000]] and we'll see the new site with the chosen theme.
 
-The server is watching for changes to be compiled so we leave it running.
+The server is watching for changes to be compiled so we can leave it running.
 
 ** Writing content
 
@@ -168,13 +168,13 @@ Now if we go to the browser we'll see the home page with a summary of the conten
 
 By default Hugo show a list of the posts created in =content/post= in the homepage. Now we can enter to the post to see the full content.
 
-Once we finished with the post it's necessary remove =draft: true= from =hello-world.md= file otherwise the file won't show up when we publish the site.
+Once we have finished with the post it's necessary to remove =draft: true= from =hello-world.md= file otherwise the file won't show up when we publish the site.
 
 ** Publishing the site
 
 *** Uploading the site to a remote repository
 
-We can use Github, Gitlab or Bitbucket to do this. These are the services supported by Netlify. For this example I've uploaded the repository to Github and it's available in [[https://github.com/erickgnavar/hugo-demo-site]].
+We can use GitHub, GitLab or Bitbucket to do this. These are the services supported by Netlify. For this example I've uploaded the repository to GitHub and it's available in [[https://github.com/erickgnavar/hugo-demo-site]].
 
 *** Creating an account in Netlify
 
@@ -182,7 +182,7 @@ Now we have to create an account in [[https://www.netlify.com][Netlify]], there 
 
 *** Deploying site
 
-Once we have the Netlify account and the site uploaded in a external repository we can proceed with the deploy.
+Once we have the Netlify account and the site uploaded in an external repository we can proceed with the deploy.
 
 Now we can log in and start the process clicking in "New site from Git".
 
@@ -231,7 +231,7 @@ Now we can go to the url that Netlify generated for the site and we'll see the r
 
 **** Useful Netlify configuration
 
-By default Netlify only will build the site when we push changes to master. We can change this going to "Deploy settings" and changing "Branch deploys" options to "All" like the following image:
+By default Netlify will only build the site when we push changes to master. We can change this going to "Deploy settings" and changing "Branch deploys" options to "All" like the following image:
 
 #+CAPTION: Deploy settings
 #+NAME:   fig:deploy-settings
@@ -239,4 +239,4 @@ By default Netlify only will build the site when we push changes to master. We c
 
 With this configuration we can push changes to a different branch than =master= and Netlify will generate a new url to see the changes. This is useful to test changes before publish them to production site.
 
-It's also possible configure different kind of notifications(Slack, email, etc) to receive the result of the deploy.
+It's also possible to configure different kind of notifications(Slack, email, etc) to receive the result of the deploy.

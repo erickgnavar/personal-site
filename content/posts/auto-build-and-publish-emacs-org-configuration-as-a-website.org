@@ -7,9 +7,9 @@ aliases:
   - /blog/auto-build-and-publish-emacs-org-configuration-as-a-website/
 ---
 
-Having our emacs configuration in an =org= file is great, it allow us to have it more organized and easy to read, but =org= files have more features and one of them is the ability to be exported to different formats like HTML, PDF, markdown and so on. So what if we export our emacs configuration to HTML and then publish it in a website? 🤯
+Having our emacs configuration in an =org= file is great, it allow us to have it more organized and easy to read, but =org= files have more features and one of them is the ability to be exported to different formats like HTML, PDF, markdown and so on. So what if we export our emacs configuration to HTML and then publish it as a website? 🤯
 
-It probably doesn't have any real utility but it would be nice to have a exclusive web page to show our emacs config to our friends :)
+It probably doesn't have any real utility but it would be nice to have an exclusive web page to show our emacs config to our friends :)
 
 We can do this in two ways:
 
@@ -21,7 +21,7 @@ Let's define what we need to do to have the automatic way:
 - Have a script that render our org config file
 - Run this script in a CI so it can be run every time we push some changes
 - Push the rendered HTML to an extra repository
-- Activate Github Pages in the extra repository, so we can have an url where we can see the resulting website
+- Activate GitHub Pages in the extra repository, so we can have a URL where we can see the resulting website
 
 Let's assume we have this structure in our =dotfiles= repository:
 
@@ -32,11 +32,11 @@ Let's assume we have this structure in our =dotfiles= repository:
 └── scripts
 #+end_src
 
-This is a "regular" structure for a =dotfiles= repository, the extra =scripts= folder will be used later. Now let's deep into how it will work.
+This is a "regular" structure for a =dotfiles= repository, the extra =scripts= folder will be used later. Now let's dive into how it will work.
 
 * Automate the org file rendering
 
-We need to create to files and put them inside =scripts= folder:
+We need to create two files and put them inside =scripts= folder:
 
 - =render-emacs-config-to-html.sh=, this will render our config file and place the resulting HTML file inside =scripts/output/index.html=
 - =org-render-html-minimal.el=, this is a minimal config file to be able to render org into html, it load the required packages and make some basic configuration
@@ -85,17 +85,17 @@ mv index.html output/
 
 What are we doing here?
 
-We basically create a new org file called =index.org= and put a setup configuration file in it. You can avoid this step if you put this line directly in your config file, in this case we're using one of the themes available in this [[https://github.com/fniessen/org-html-themes][repository]], there is more themes available in this other [[https://olmon.gitlab.io/org-themes/][repository]] so you can choose the one you like the most.
+We basically create a new org file called =index.org= and put a setup configuration file in it. You can avoid this step if you put this line directly in your config file, in this case we're using one of the themes available in this [[https://github.com/fniessen/org-html-themes][repository]], there are more themes available in this other [[https://olmon.gitlab.io/org-themes/][repository]] so you can choose the one you like the most.
 
 Now we need to run emacs with our previously defined configuration =org-render-html-minimal.el= and tell it to render our =index.org=.
 
 And finally we put the resulting =index.html= inside =output= folder. This folder will be used later.
 
-* Using Github actions to build and publish the rendered config
+* Using GitHub Actions to build and publish the rendered config
 
-We're going to use a Github action called [[https://github.com/marketplace/actions/push-directory-to-another-repository][push-directory-to-another-repository]], this action allow us to commit and push changes in another repository. Some configuration is required to use this action:
+We're going to use a GitHub action called [[https://github.com/marketplace/actions/push-directory-to-another-repository][push-directory-to-another-repository]], this action allow us to commit and push changes in another repository. Some configuration is required to use this action:
 
-** Create a extra repository
+** Create an extra repository
 
 This extra repository will be used to host our rendered config file, in my case this repository is =erickgnavar/emacs-config=, we also need to activate Github Pages in this repository and set it up to use =master= branch
 
@@ -105,17 +105,17 @@ The url generated, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.gi
 
 ** Create a personal token
 
-To be able to push changes into the new repository we have to create a personal access token, this can be made in [[https://github.com/settings/tokens/][account settings]], this token should have the =repo= scoped activated.
+To be able to push changes into the new repository we have to create a personal access token, this can be made in [[https://github.com/settings/tokens/][account settings]], this token should have the =repo= scope activated.
 
 [[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/generate-github-api-token.png]]
 
 ** Configure a secret variable in our dotfiles repository
 
-The Github action needs a secret variable called =API_TOKEN_GITHUB=, this variable allow the action to push changes into the new repository, we can create it by going to =repository/settings/secrets/New repository secret=
+The GitHub action needs a secret variable called =API_TOKEN_GITHUB=, this variable allow the action to push changes into the new repository, we can create it by going to =repository/settings/secrets/New repository secret=
 
 [[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/create-api-token-secret.png]]
 
-** Configure Github action config file
+** Configure GitHub action config file
 
 Finally we have to create a file =.github/workflows/ci.yml= with the following content:
 
@@ -158,7 +158,7 @@ Now every time we push changes to our =dotfiles= repository this action will pus
 
 [[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/destination-repo-commits-list.png]]
 
-And when we enter to the url generated from Github pages, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.github.io/emacs-config]] in my case, we can see our configuration rendered:
+And when we enter the URL generated from GitHub Pages, [[https://erickgnavar.github.io/emacs-config/][erickgnavar.github.io/emacs-config]] in my case, we can see our configuration rendered:
 
 [[file:/images/posts/auto-build-and-publish-emacs-configuration-as-a-website/rendered-config-result-page.png]]
 

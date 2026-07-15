@@ -7,7 +7,7 @@ aliases:
   - /blog/code-search-alfred-workflow/
 ---
 
-Code search is a useful tool to search for examples about some function, class, etc. We're going to create a Alfred workflow to easily search into [[https://github.com/features/code-search/][GitHub Code search]] and [[https://sourcegraph.com/search][SourceGraph]]
+Code search is a useful tool to search for examples about some function, class, etc. We're going to create an Alfred workflow to easily search with [[https://github.com/features/code-search/][GitHub Code search]] and [[https://sourcegraph.com/search][SourceGraph]]
 
 ** Create a workflow
 
@@ -78,6 +78,6 @@ Now if we open ~Alfred~ and write for example: ~cs completing-read~ we'll see th
 
 [[file:/images/posts/code-search-alfred-workflow/result.png]]
 
-If we press ~enter~ a new browser tab will be open with the selected service and input we wrote.
+If we press ~enter~ a new browser tab will be opened with the selected service and input we wrote.
 
 Enjoy :)

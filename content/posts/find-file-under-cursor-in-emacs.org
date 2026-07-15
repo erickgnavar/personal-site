@@ -8,7 +8,7 @@ aliases:
   - /til/find-file-under-cursor-in-emacs/
 ---
 
-=#TIL= you can use =gf= to open a file under the current cursor position in VIM, I was reading this [[https://thevaluable.dev/vim-advanced/][post]] I found in Hacker News and I was wondering if =evil-mode= has this functionality as well
+=#TIL= you can use =gf= to open a file under the current cursor position in VIM, I was reading this [[https://thevaluable.dev/vim-advanced/][post]] I found on Hacker News and I was wondering if =evil-mode= has this functionality as well
 
 =evil-mode= has this key binding defined and it uses =(find-file-at-point)=, it works well for absolute paths but not for relative paths and I wanted to use it for a path like this =templates/home.html= so I wrote some =elisp= code to be able to make what I want:
 

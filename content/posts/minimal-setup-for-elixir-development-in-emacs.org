@@ -62,7 +62,7 @@ We can install these packages with the following code. Notice that we're enablin
 
 Running tests without leaving our editor is a nice feature to have in any editor/IDE. Unfortunately I haven't found any package that does this, so I wrote some elisp code to accomplish it.
 
-To make this happen we're going to use feature called =compile=. Compile allows us to execute a shell command and print the resulting output in a "compilation" buffer so we can see the results.
+To make this happen we're going to use a feature called =compile=. Compile allows us to execute a shell command and print the resulting output in a "compilation" buffer so we can see the results.
 
 We can run tests using =mix test= in different ways
 
@@ -98,10 +98,10 @@ There are some other ways but these are the ones we're going to use.
 #+END_SRC
 
 We have three functions, a "private" function called =my/mix-run-test= which will do all the "magic", this function will get some data about the context where it was called.
-We got the =current-file= and =current-line= from where the function was called, and now we'll use this to build our shell command and then use this shell command to call =compile=.
+We get the =current-file= and =current-line= from where the function was called, and now we'll use this to build our shell command and then use this shell command to call =compile=.
 
 Now we can create two more functions to expose two different behaviors, running an entire test file or just the test our cursor is placed on.
-We're going to use the latest to have a keybinding a run the test quickest.
+We're going to use the latest to have a keybinding to run the test quicker.
 
 Now we can add this to our previous code:
 
@@ -118,7 +118,7 @@ Now if we press =C-c C-t= in a file(=my_test.exs=) where our cursor is on line 1
 * Others useful packages
 
 - Projectile: It's a package to handle many projects. It allows us to switch between projects easily.
-- Magit: The best interface so far for use git. If you haven't use it you definitively should give it a try.
+- Magit: The best interface so far for using git. If you haven't used it you definitely should give it a try.
 - direnv-mode: It's a package to load environment variables using a =.envrc= file. It's useful to load all the environment variables you need for a project.
 
 * Conclusion

@@ -7,7 +7,7 @@ aliases:
   - /blog/select-term-at-point-using-tree-sitter-in-emacs/
 ---
 
-Some days ago I saw a tweet(detail below) that show an interesting feature, a way to select terms using the mouse. After seeing that I thought it will be easy to implement using [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]].
+Some days ago I saw a tweet(detail below) that show an interesting feature, a way to select terms using the mouse. After seeing that I thought it would be easy to implement using [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]].
 
 {{< x user="disconcision" id="1587156531203678208" >}}
 
@@ -38,14 +38,14 @@ To be able to select term nodes we need to use a grammar, for this case we're go
 - ~function~
 
 #+begin_quote
-The order of the terms should be from small to large, for example a ~function~ which can include other terms should be defined at last otherwise the whole function will be highlighted when any part of the function is clicked.
+The order of the terms should be from small to large, for example a ~function~ which can include other terms should be defined last otherwise the whole function will be highlighted when any part of the function is clicked.
 #+end_quote
 
 #+begin_src emacs-lisp
 (defvar modes-mapping '((haskell-mode . (exp_apply exp_infix exp_in exp_cond exp_literal function ))))
 #+end_src
 
-Now we need to define a function that will check if an term exists at point, this will be done by extracting all the predefined grammar elements for the current ~major-mode~ and check if any of them match.
+Now we need to define a function that will check if a term exists at point, this will be done by extracting all the predefined grammar elements for the current ~major-mode~ and check if any of them match.
 
 #+begin_src emacs-lisp
 (defun get-text-node-at-point ()
@@ -54,7 +54,7 @@ Now we need to define a function that will check if an term exists at point, thi
     (seq-some (lambda (type) (tree-sitter-node-at-pos type (point) t)) types)))
 #+end_src
 
-Now we need a function to highlight the term node at point and apply a new ~overlay~ using the face ~highlight-face~ defined lines above. ~when-let*~ is used to avoid raising an error in case there is no node at point.
+Now we need a function to highlight the term node at point and apply a new ~overlay~ using the face ~highlight-face~ defined above. ~when-let*~ is used to avoid raising an error in case there is no node at point.
 
 #+begin_src emacs-lisp
 (defun highlight-node-at-point ()
@@ -67,7 +67,7 @@ Now we need a function to highlight the term node at point and apply a new ~over
     (overlay-put overlay 'face highlight-face)))
 #+end_src
 
-The last part is to call ~highlight-node-at-point~ when we click in some part of the buffer. To do this we define a function that receive a mouse event and then bind it to left mouse button.
+The last part is to call ~highlight-node-at-point~ when we click on some part of the buffer. To do this we define a function that receive a mouse event and then bind it to left mouse button.
 
 #+begin_src emacs-lisp
 (defun mouse-click-handler (event)

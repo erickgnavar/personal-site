@@ -7,12 +7,12 @@ aliases:
   - /blog/activate-python-virtualenv-automatically-with-direnv/
 ---
 
-[[https://direnv.net][direnv]] is a tool to set up automatically environment variables as soon as we enter in a directory that contains a =.envrc= file. We can use this feature to activate our virtualenvs as well.
+[[https://direnv.net][direnv]] is a tool to set up automatically environment variables as soon as we enter a directory that contains a =.envrc= file. We can use this feature to activate our virtualenvs as well.
 
 Let's see what happens when we activate manually a virtualenv with =source ./env/bin/activate=:
 
-- A new new environment variable called =VIRTUAL_ENV= is exported.
-- The path is updated to include the =bin= directory inside our =virtualenv= this is made to allow us to point to the correct python installation and run cli interfaces exposed by the dependencies we have installed.
+- A new environment variable called =VIRTUAL_ENV= is exported.
+- The path is updated to include the =bin= directory inside our =virtualenv= this is made to allow us to point to the correct python installation and run CLI interfaces exposed by the dependencies we have installed.
 
 Because all the "magic" about activating a =virtualenv= is basically configuring some environment variables we can do it automatically using =direnv=.
 

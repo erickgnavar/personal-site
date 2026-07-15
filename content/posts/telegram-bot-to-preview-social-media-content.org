@@ -7,11 +7,11 @@ aliases:
   - /blog/telegram-bot-to-preview-social-media-content/
 ---
 
-I usually share some links of Twitter(it is known as X now but I still call it Twitter) in Telegram, but for some reason the previews doesn't work well most of the times.
+I usually share some links of Twitter(it is known as X now but I still call it Twitter) in Telegram, but for some reason the previews doesn't work well most of the time.
 
 One solution was to edit a Twitter link so I can use vxtwitter.com instead of twitter.com, this provides better previews but doing it that way is too manual so I made a bot to detect when I share a Twitter link and edit the message to use vxtwitter.com instead.
 
-The bot uses the library [[https://pypi.org/project/Telethon/][telethon]], it's a really easy to use python library. Also it has great documentation.
+The bot uses the library [[https://pypi.org/project/Telethon/][telethon]], it's a really easy-to-use Python library. Also it has great documentation.
 
 This is the complete code.
 
@@ -49,9 +49,9 @@ client.start()
 client.run_until_disconnected()
 #+end_src
 
-The code is simple, it connect to Telegram API using a "personal bot", this means it will act on your behalf. It will detect when the message has a x.com link and it will replace it(making an edit) with vxtwitter.com so it will be have a nice preview :)
+The code is simple, it connect to Telegram API using a "personal bot", this means it will act on your behalf. It will detect when the message has a x.com link and it will replace it(making an edit) with vxtwitter.com so it will have a nice preview :)
 
-This can be extended to do another nice things, for example: TikTok doesn't allow to see videos in mobile at least you have their app installed. In case someone send me a TikTok link I automatically respond with a preview message using vm.vxtiktok.com so I can see the video inside Telegram without having to install the app :).
+This can be extended to do other nice things, for example: TikTok doesn't let you see videos on mobile unless you have their app installed. In case someone send me a TikTok link I automatically respond with a preview message using vm.vxtiktok.com so I can see the video inside Telegram without having to install the app :).
 
 The code to do that is:
 
@@ -66,4 +66,4 @@ async def rewrite_tiktok_links(event):
         await event.reply(event.raw_text.replace("tiktok.com", "vxtiktok.com"))
 #+end_src
 
-In this case we respond only to a direct messages, that's why the early return when ~event.is_group~ is true.
+In this case we respond only to direct messages, that's why the early return when ~event.is_group~ is true.
